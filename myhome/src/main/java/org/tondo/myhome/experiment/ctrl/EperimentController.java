@@ -28,8 +28,6 @@ public class EperimentController {
 		
 		List<Food> list = new ArrayList<>();
 		Food halusky = new Food();
-		halusky.setAproximateCost(BigDecimal.valueOf(5.75));
-		halusky.setCookDate(Calendar.getInstance());
 		halusky.setName("Halusky");
 		list.add(halusky);
 		return list;
