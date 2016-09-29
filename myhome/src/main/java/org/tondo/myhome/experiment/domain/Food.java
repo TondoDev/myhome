@@ -1,8 +1,5 @@
 package org.tondo.myhome.experiment.domain;
 
-import java.math.BigDecimal;
-import java.util.Calendar;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
