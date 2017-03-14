@@ -8,5 +8,22 @@
 		<h2>Is this over, or just beginning?</h2>
 		<p th:text="${name}"></p>
 		<p>Message for page property file <span th:text="${name}" /></p>
+		
+		<table>
+			<tr>
+				<th>ID</th>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Amount</th>
+				<th>Note</th>
+			</tr>
+			<tr th:each="exp : ${expenses}">
+				<td th:text="${exp.id}"></td>
+				<td th:text="${#calendars.format(exp.date, 'dd-MM-yyyy')}"></td>
+				<td th:text="${exp.expenseType}"></td>
+				<td th:text="${exp.amount}"></td>
+				<td th:text="${exp.note}"></td>
+			</tr>
+		</table>
 	</body>
 </html>
