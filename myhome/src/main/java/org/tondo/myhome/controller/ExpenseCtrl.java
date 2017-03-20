@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.tondo.myhome.domain.Expense;
@@ -23,6 +24,14 @@ public class ExpenseCtrl {
 		String note = expenses.get(0).getNote();
 		model.addAttribute("expenses", expenses);
 		model.addAttribute("name", note);
+		// for store form input
+		model.addAttribute("expense", new Expense());
+		return "index";
+	}
+	
+	@RequestMapping
+	public String addExpense(@ModelAttribute("expense") Expense expense) {
+		System.out.println(expense.getAmount());
 		return "index";
 	}
 }

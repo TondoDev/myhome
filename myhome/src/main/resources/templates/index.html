@@ -10,6 +10,11 @@
 		<p>Message for page property file <span th:text="${name}" /></p>
 		<p th:text="'Concatenated text ' + ${name}"></p>
 		
+		<form action="#" th:action="@{/expense/}" method="post" th:object="${expense}">
+			<p>Amount <input type="text" th:field="*{amount}" /> </p>
+			<p><input  type="submit" value="Submit"/></p>
+		</form>
+		
 		<table>
 			<tr>
 				<th>ID</th>
