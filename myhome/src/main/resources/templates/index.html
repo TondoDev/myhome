@@ -12,6 +12,8 @@
 		
 		<form action="#" th:action="@{/expense/}" method="post" th:object="${expense}">
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
+			<p>Type <input type="text" th:field="*{expenseType}" /> </p>
+			<p>Note <input type="text" th:field="*{note}" /> </p>
 			<p><input  type="submit" value="Submit"/></p>
 		</form>
 		

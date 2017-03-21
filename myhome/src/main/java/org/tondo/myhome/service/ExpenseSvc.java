@@ -15,9 +15,12 @@ public class ExpenseSvc {
 	@Autowired
 	private ExpenseRepository expenseRepo;
 	
-	
 	public List<Expense> getExpenses() {
 		return iterableToList(expenseRepo.findAll());
+	}
+	
+	public void save(Expense expense) {
+		expenseRepo.save(expense);
 	}
 	
 	private <T> List<T> iterableToList(Iterable<T> iterable) {
