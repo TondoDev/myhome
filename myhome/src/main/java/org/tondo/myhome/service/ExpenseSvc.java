@@ -1,6 +1,7 @@
 package org.tondo.myhome.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class ExpenseSvc {
 	}
 	
 	public void save(Expense expense) {
+		if (expense.getDate() == null) {
+			expense.setDate(Calendar.getInstance());
+		}
 		expenseRepo.save(expense);
 	}
 	
@@ -32,5 +36,5 @@ public class ExpenseSvc {
 		return retval;
 	}
 	
-	
+	// TODO InitBinder for Calendar
 }

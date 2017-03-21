@@ -1,6 +1,5 @@
 package org.tondo.myhome.controller;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ public class ExpenseCtrl {
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public String addExpense(@ModelAttribute("expense") Expense expense) {
-		expense.setDate(Calendar.getInstance());
 		expenseService.save(expense);
 		return "redirect:/expense/";
 	}
