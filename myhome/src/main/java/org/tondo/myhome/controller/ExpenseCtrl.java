@@ -1,10 +1,15 @@
 package org.tondo.myhome.controller;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +30,10 @@ public class ExpenseCtrl {
 		model.addAttribute("expenses", expenses);
 		model.addAttribute("name", note);
 		// for store form input
-		model.addAttribute("expense", new Expense());
+		Expense formDefault = new Expense();
+		formDefault.setDate(Calendar.getInstance());
+		formDefault.setAmount(BigDecimal.valueOf(15));
+		model.addAttribute("expense", formDefault);
 		return "index";
 	}
 	
@@ -34,4 +42,14 @@ public class ExpenseCtrl {
 		expenseService.save(expense);
 		return "redirect:/expense/";
 	}
+	
+	// is calling 
+	@InitBinder
+	public void paramBinding(WebDataBinder binder) {
+		System.out.println("-- init binder");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		dateFormat.setLenient(false);
+		//binder.registerCustomEditor(Calendar.class, "date", new CustomDateEditor(dateFormat, true));
+	}
+	
 }
