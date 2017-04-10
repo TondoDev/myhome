@@ -11,7 +11,7 @@
 		<p th:text="'Concatenated text ' + ${name}"></p>
 		
 		<form action="#" th:action="@{/expense/}" method="post" th:object="${expense}">
-			<p>Date <input type="text" th:value="${#calendars.format(expense.date, 'dd.MM.yyyy')}" /> </p>
+			<p>Date <input type="text" name="date" th:value="${#dates.format(expense.date, 'dd.MM.yyyy')}" /> </p>
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
 			<p>Type <input type="text" th:field="*{expenseType}" /> </p>
 			<p>Note <input type="text" th:field="*{note}" /> </p>
@@ -28,7 +28,7 @@
 			</tr>
 			<tr th:each="exp : ${expenses}">
 				<td th:text="${exp.id}"></td>
-				<td th:text="${#calendars.format(exp.date, 'dd.MM.yyyy')}"></td>
+				<td th:text="${#dates.format(exp.date, 'dd.MM.yyyy')}"></td>
 				<td th:text="${exp.expenseType}"></td>
 				<td th:text="${exp.amount}"></td>
 				<td th:text="${exp.note}"></td>

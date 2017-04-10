@@ -2,6 +2,7 @@ package org.tondo.myhome.domain;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ public class Expense {
 	private Long id;
 
 	@Column(nullable = false)
-	private Calendar date;
+	private Date date;
 	
 	@Column(nullable = false)
 	private BigDecimal amount;
@@ -36,11 +37,11 @@ public class Expense {
 		this.id = id;
 	}
 	
-	public Calendar getDate() {
+	public Date getDate() {
 		return date;
 	}
 	
-	public void setDate(Calendar date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	
