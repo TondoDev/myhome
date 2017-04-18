@@ -7,13 +7,17 @@
 	<body>
 		<h2>Is this over, or just beginning?</h2>
 		<p th:text="${name}"></p>
-		<p>Message for page property file <span th:text="${name}" /></p>
+		<p>Message for page property file <span th:text="${name}"></span></p>
 		<p th:text="'Concatenated text ' + ${name}"></p>
 		
 		<form action="#" th:action="@{/expense/}" method="post" th:object="${expense}">
 			<p>Date <input type="text" name="date" th:value="${#dates.format(expense.date, 'dd.MM.yyyy')}" /> </p>
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
-			<p>Type <input type="text" th:field="*{expenseType}" /> </p>
+			<p>Type 
+				<select th:field="*{expenseType}">
+					<option th:each="expType : ${cbExpenseType}" th:value="${expType.key}" th:text="${expType.label}"/>
+				</select> 
+			</p>
 			<p>Note <input type="text" th:field="*{note}" /> </p>
 			<p><input  type="submit" value="Submit"/></p>
 		</form>

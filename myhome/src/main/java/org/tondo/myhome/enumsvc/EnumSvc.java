@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EnumService {
+public class EnumSvc {
 
 	private List<EnumName> enums;
 	private Map<String, List<EnumValue>> enumValues;

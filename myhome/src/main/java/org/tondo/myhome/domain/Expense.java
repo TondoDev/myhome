@@ -22,7 +22,7 @@ public class Expense {
 	private BigDecimal amount;
 	
 	@Column(nullable = false)
-	private int expenseType;
+	private String expenseType;
 	
 	private String note;
 	
@@ -60,11 +60,11 @@ public class Expense {
 		this.note = note;
 	}
 	
-	public int getExpenseType() {
+	public String getExpenseType() {
 		return expenseType;
 	}
 	
-	public void setExpenseType(int expenseType) {
+	public void setExpenseType(String expenseType) {
 		this.expenseType = expenseType;
 	}
 }

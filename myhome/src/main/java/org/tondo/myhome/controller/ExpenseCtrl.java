@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.tondo.myhome.domain.Expense;
+import org.tondo.myhome.enumsvc.EnumNames;
+import org.tondo.myhome.enumsvc.EnumSvc;
+import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
+import org.tondo.myhome.presentation.dropdown.DropdownValue;
 import org.tondo.myhome.service.ExpenseSvc;
 
 @Controller
@@ -25,8 +29,18 @@ public class ExpenseCtrl {
 	@Autowired
 	private ExpenseSvc expenseService;
 	
+	@Autowired
+	private EnumSvc enumService;
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String findAll(Model model) {
+		
+		DropdownListCreator<String> dpCreator = new DropdownListCreator<>(DropdownListCreator.STRING_KEY);
+		List<DropdownValue<String>> expenseCat = dpCreator
+			.addItems(enumService.getEnumValues(EnumNames.EXPENSES))
+			.values();
+		
+		model.addAttribute("cbExpenseType", expenseCat);
 		List<Expense> expenses = expenseService.getExpenses();
 		String note = expenses.get(0).getNote();
 		model.addAttribute("expenses", expenses);
@@ -36,7 +50,7 @@ public class ExpenseCtrl {
 		formDefault.setDate(new Date());
 		formDefault.setAmount(BigDecimal.valueOf(15));
 		model.addAttribute("expense", formDefault);
-		return "index";
+		return "expense";
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
