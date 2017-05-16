@@ -2,8 +2,11 @@ package org.tondo.myhome.controller;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.tondo.myhome.domain.Expense;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
+import org.tondo.myhome.presentation.ViewDataObject;
 import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
 import org.tondo.myhome.presentation.dropdown.DropdownValue;
 import org.tondo.myhome.service.ExpenseSvc;
@@ -43,9 +47,10 @@ public class ExpenseCtrl {
 		model.addAttribute("cbExpenseType", expenseCat);
 		List<Expense> expenses = expenseService.getExpenses();
 		String note = expenses.get(0).getNote();
-		model.addAttribute("expenses", expenses);
+		model.addAttribute("expenses", resolveExpenses(expenses));
 		model.addAttribute("name", note);
 		// for store form input
+		
 		Expense formDefault = new Expense();
 		formDefault.setDate(new Date());
 		formDefault.setAmount(BigDecimal.valueOf(15));
@@ -54,8 +59,9 @@ public class ExpenseCtrl {
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String addExpense(@ModelAttribute("expense") Expense expense, BindingResult bindingResult) {
+	public String addExpense(@ModelAttribute("expense") Expense expense, BindingResult bindingResult, Model model) {
 		expenseService.save(expense);
+		model.addAttribute("expense", expense);
 		return "redirect:/expense/";
 	}
 	
@@ -66,6 +72,18 @@ public class ExpenseCtrl {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		dateFormat.setLenient(false);
 		binder.registerCustomEditor(Date.class, "date", new CustomDateEditor(dateFormat, true));
+	}
+	
+	private List<ViewDataObject<Expense>> resolveExpenses(List<Expense> expenses) {
+		List<ViewDataObject<Expense>> retVal = new ArrayList<>();
+		
+		for (Expense exp : expenses) {
+			Map<String, String> labels = new HashMap<>();
+			labels.put(exp.getExpenseType(), enumService.resolve(exp.getExpenseType(), EnumNames.EXPENSES));
+			retVal.add(new ViewDataObject<Expense>(exp, labels));
+		}
+		
+		return retVal;
 	}
 	
 }

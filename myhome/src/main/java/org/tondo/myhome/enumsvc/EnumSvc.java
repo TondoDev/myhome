@@ -41,4 +41,28 @@ public class EnumSvc {
 		List<EnumValue> values = this.enumValues.get(enumName);
 		return values == null ? null : Collections.unmodifiableList(values);
 	}
+	
+	public boolean isEnumValue(String value, String enumName) {
+		
+		return false;
+	}
+	
+	public String resolve(String value, String enumName) {
+		List<EnumValue> enumValues = this.enumValues.get(enumName);
+		if (enumValues == null) {
+			return unresolvable(value);
+		}
+		
+		for (EnumValue ev : enumValues) {
+			if (value.equals(ev.getValue())) {
+				return ev.getLabel();
+			}
+		}
+		
+		return unresolvable(value);
+	}
+	
+	protected String unresolvable(String value) {
+		return "!" + value + "!";
+	}
 }
