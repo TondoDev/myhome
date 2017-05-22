@@ -24,6 +24,7 @@ import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.presentation.ViewDataObject;
 import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
 import org.tondo.myhome.presentation.dropdown.DropdownValue;
+import org.tondo.myhome.service.ExpenseDO;
 import org.tondo.myhome.service.ExpenseSvc;
 
 @Controller
@@ -39,19 +40,19 @@ public class ExpenseCtrl {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String findAll(Model model) {
 		
+		// values to combobox for expense type
 		DropdownListCreator<String> dpCreator = new DropdownListCreator<>(DropdownListCreator.STRING_KEY);
-		List<DropdownValue<String>> expenseCat = dpCreator
+		List<DropdownValue<String>> cbExpenseTypeValues = dpCreator
 			.addItems(enumService.getEnumValues(EnumNames.EXPENSES))
 			.values();
+		model.addAttribute("cbExpenseType", cbExpenseTypeValues);
 		
-		model.addAttribute("cbExpenseType", expenseCat);
-		List<Expense> expenses = expenseService.getExpenses();
-		String note = expenses.get(0).getNote();
-		model.addAttribute("expenses", resolveExpenses(expenses));
-		model.addAttribute("name", note);
-		// for store form input
-		
-		Expense formDefault = new Expense();
+		// populate list
+		// List<Expense> expenses = expenseService.getExpenses();
+		// model.addAttribute("expenses", resolveExpenses(expenses));
+
+		// defaults to form
+		ExpenseDO formDefault = new ExpenseDO();
 		formDefault.setDate(new Date());
 		formDefault.setAmount(BigDecimal.valueOf(15));
 		model.addAttribute("expense", formDefault);
@@ -59,7 +60,7 @@ public class ExpenseCtrl {
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String addExpense(@ModelAttribute("expense") Expense expense, BindingResult bindingResult, Model model) {
+	public String addExpense(@ModelAttribute("expense") ExpenseDO expense, BindingResult bindingResult, Model model) {
 		expenseService.save(expense);
 		model.addAttribute("expense", expense);
 		return "redirect:/expense/";

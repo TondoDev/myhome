@@ -1,7 +1,6 @@
 package org.tondo.myhome.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,11 +20,21 @@ public class ExpenseSvc {
 		return iterableToList(expenseRepo.findAll());
 	}
 	
-	public void save(Expense expense) {
-		if (expense.getDate() == null) {
-			expense.setDate(new Date());
-		}
+	public void save(ExpenseDO expenseDo) {
+		Expense expense = this.fromDataObject(expenseDo);
 		expenseRepo.save(expense);
+	}
+	
+	
+	public Expense fromDataObject(ExpenseDO data) {
+		Expense retVal = new Expense();
+		retVal.setId(data.getId());
+		retVal.setAmount(data.getAmount());
+		retVal.setDate(data.getDate());
+		retVal.setExpenseType(data.getExpenseType());
+		retVal.setNote(data.getNote());
+		
+		return retVal;
 	}
 	
 	private <T> List<T> iterableToList(Iterable<T> iterable) {
