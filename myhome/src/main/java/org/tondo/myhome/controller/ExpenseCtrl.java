@@ -48,7 +48,7 @@ public class ExpenseCtrl {
 		model.addAttribute("cbExpenseType", cbExpenseTypeValues);
 		
 		// populate list
-		// List<Expense> expenses = expenseService.getExpenses();
+		// List<ExpenseDO> expenses = expenseService.getExpenses();
 		// model.addAttribute("expenses", resolveExpenses(expenses));
 
 		// defaults to form

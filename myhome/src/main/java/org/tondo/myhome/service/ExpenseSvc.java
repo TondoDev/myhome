@@ -16,8 +16,8 @@ public class ExpenseSvc {
 	private ExpenseRepository expenseRepo;
 	
 	
-	public List<Expense> getExpenses() {
-		return iterableToList(expenseRepo.findAll());
+	public List<ExpenseDO> getExpenses() {
+		return iterableToDataObjectList(expenseRepo.findAll());
 	}
 	
 	public void save(ExpenseDO expenseDo) {
@@ -37,11 +37,22 @@ public class ExpenseSvc {
 		return retVal;
 	}
 	
-	private <T> List<T> iterableToList(Iterable<T> iterable) {
-		List<T> retval = new ArrayList<>();
-		Iterator<T> iter = iterable.iterator();
+	public ExpenseDO toDataObject(Expense data) {
+		ExpenseDO retVal = new ExpenseDO();
+		retVal.setId(data.getId());
+		retVal.setAmount(data.getAmount());
+		retVal.setDate(data.getDate());
+		retVal.setExpenseType(data.getExpenseType());
+		retVal.setNote(data.getNote());
+		
+		return retVal;
+	}
+	
+	private List<ExpenseDO> iterableToDataObjectList(Iterable<Expense> iterable) {
+		List<ExpenseDO> retval = new ArrayList<>();
+		Iterator<Expense> iter = iterable.iterator();
 		while(iter.hasNext()) {
-			retval.add(iter.next());
+			retval.add(toDataObject(iter.next()));
 		}
 		return retval;
 	}
