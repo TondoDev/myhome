@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tondo.myhome.domain.Expense;
+import org.tondo.myhome.enumsvc.EnumNames;
+import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.repo.ExpenseRepository;
 
 @Service
@@ -14,6 +16,9 @@ public class ExpenseSvc {
 
 	@Autowired
 	private ExpenseRepository expenseRepo;
+	
+	@Autowired
+	private EnumSvc enumSvc;
 	
 	
 	public List<ExpenseDO> getExpenses() {
@@ -44,6 +49,7 @@ public class ExpenseSvc {
 		retVal.setDate(data.getDate());
 		retVal.setExpenseType(data.getExpenseType());
 		retVal.setNote(data.getNote());
+		retVal.setExpenseTypeLabel(enumSvc.resolve(data.getExpenseType(), EnumNames.EXPENSES));
 		
 		return retVal;
 	}

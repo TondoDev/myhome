@@ -27,15 +27,14 @@
 				<th>Amount</th>
 				<th>Note</th>
 			</tr>
-			<!-- 
+
 			<tr th:each="exp : ${expenses}">
 				<td th:text="${exp.id}"></td>
 				<td th:text="${#dates.format(exp.date, 'dd.MM.yyyy')}"></td>
-				<td th:text="${exp.expenseType}"></td>
+				<td th:text="${exp.expenseTypeLabel}"></td>
 				<td th:text="${exp.amount}"></td>
 				<td th:text="${exp.note}"></td>
 			</tr>
-			 -->
 		</table>
 	</body>
 </html>
