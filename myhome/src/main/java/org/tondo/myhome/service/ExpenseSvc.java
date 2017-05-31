@@ -30,6 +30,10 @@ public class ExpenseSvc {
 		expenseRepo.save(expense);
 	}
 	
+	public void delete(Long id) {
+		expenseRepo.delete(id);
+	}
+	
 	
 	public Expense fromDataObject(ExpenseDO data) {
 		Expense retVal = new Expense();

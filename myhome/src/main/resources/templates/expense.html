@@ -34,6 +34,11 @@
 				<td th:text="${exp.expenseTypeLabel}"></td>
 				<td th:text="${exp.amount}"></td>
 				<td th:text="${exp.note}"></td>
+				<td>
+					<form action="#" th:action="@{'/expense/{id}'(id=${exp.id})}" th:method="delete">
+						<input  type="submit" value="Delete"/>
+					</form>
+				</td>
 			</tr>
 		</table>
 	</body>

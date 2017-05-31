@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.tondo.myhome.enumsvc.EnumNames;
@@ -58,6 +59,12 @@ public class ExpenseCtrl {
 	public String addExpense(@ModelAttribute("expense") ExpenseDO expense, BindingResult bindingResult, Model model) {
 		expenseService.save(expense);
 		model.addAttribute("expense", expense);
+		return "redirect:/expense/";
+	}
+	
+	@RequestMapping(value="/{expenseId}", method = RequestMethod.DELETE)
+	public String deleteExpense(@PathVariable Long expenseId) {
+		this.expenseService.delete(expenseId);
 		return "redirect:/expense/";
 	}
 	
