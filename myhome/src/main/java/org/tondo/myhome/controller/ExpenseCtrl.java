@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
@@ -25,6 +26,7 @@ import org.tondo.myhome.service.ExpenseSvc;
 
 @Controller
 @RequestMapping("/expense")
+@SessionAttributes("expenseForm")
 public class ExpenseCtrl {
 	
 	@Autowired
@@ -32,6 +34,15 @@ public class ExpenseCtrl {
 	
 	@Autowired
 	private EnumSvc enumService;
+	
+	@ModelAttribute("expenseForm")
+	public ExpenseDO getDefaultFormContent() {
+		ExpenseDO formDefault = new ExpenseDO();
+		formDefault.setDate(new Date());
+		formDefault.setAmount(BigDecimal.valueOf(200));
+		System.out.println("forme default called ==========");
+		return formDefault;
+	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String findAll(Model model) {
@@ -47,18 +58,15 @@ public class ExpenseCtrl {
 		List<ExpenseDO> expenses = expenseService.getExpenses();
 		model.addAttribute("expenses", expenses);
 
-		// defaults to form
-		ExpenseDO formDefault = new ExpenseDO();
-		formDefault.setDate(new Date());
-		formDefault.setAmount(BigDecimal.valueOf(15));
-		model.addAttribute("expense", formDefault);
 		return "expense";
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String addExpense(@ModelAttribute("expense") ExpenseDO expense, BindingResult bindingResult, Model model) {
-		expenseService.save(expense);
-		model.addAttribute("expense", expense);
+	public String addExpense(@ModelAttribute("expenseForm") ExpenseDO expense, BindingResult bindingResult, Model model) {
+		if (!bindingResult.hasErrors()) {
+			expenseService.save(expense);
+			expense.setNote(null);
+		}
 		return "redirect:/expense/";
 	}
 	

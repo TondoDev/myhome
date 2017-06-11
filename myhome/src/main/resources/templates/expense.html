@@ -7,8 +7,8 @@
 	<body>
 		<h2>Expenses for living</h2>
 		
-		<form action="#" th:action="@{/expense/}" method="post" th:object="${expense}">
-			<p>Date <input type="text" name="date" th:value="${#dates.format(expense.date, 'dd.MM.yyyy')}" /> </p>
+		<form action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
+			<p>Date <input type="text" name="date" th:value="${#dates.format(expenseForm.date, 'dd.MM.yyyy')}" /> </p>
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
 			<p>Type 
 				<select th:field="*{expenseType}">
