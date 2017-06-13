@@ -8,15 +8,25 @@
 		<h2>Expenses for living</h2>
 		
 		<form action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
+		
 			<p>Date <input type="text" name="date" th:value="${#dates.format(expenseForm.date, 'dd.MM.yyyy')}" /> </p>
+			<!-- <p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p> -->
+			
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
+			<p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Incorrect date</p>
+			
 			<p>Type 
 				<select th:field="*{expenseType}">
 					<option th:each="expType : ${cbExpenseType}" th:value="${expType.key}" th:text="${expType.label}"/>
 				</select> 
 			</p>
+			<p th:if="${#fields.hasErrors('expenseType')}" th:errors="*{expenseType}">Incorrect date</p>
+			
 			<p>Note <input type="text" th:field="*{note}" /> </p>
+			<p th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Incorrect date</p>
+			
 			<p><input  type="submit" value="Submit"/></p>
+			<p  th:if="${#fields.hasErrors('*')}" style="color: red" >Some errors have occurred!</p>
 		</form>
 		
 		<table>
