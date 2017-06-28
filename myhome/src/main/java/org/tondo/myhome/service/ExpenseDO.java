@@ -11,6 +11,7 @@ public class ExpenseDO {
 
 	private Long id;
 	
+	@NotNull
 	private Date date;
 	
 	@NotNull

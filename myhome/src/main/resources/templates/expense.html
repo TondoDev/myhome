@@ -9,8 +9,8 @@
 		
 		<form action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
 		
-			<p>Date <input type="text" name="date" th:value="${#dates.format(expenseForm.date, 'dd.MM.yyyy')}" /> </p>
-			<!-- <p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p> -->
+			<p>Date <input type="text" name="date" th:value="${expenseForm.date != null} ? ${#dates.format(expenseForm.date, 'dd.MM.yyyy')} : null" /> </p>
+			<p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p>
 			
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
 			<p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Incorrect date</p>
