@@ -2,10 +2,10 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<title>Expenses</title>
+		<title th:text="#{page.title}">Expenses</title>
 	</head>
 	<body>
-		<h2>Expenses for living</h2>
+		<h2 th:text="#{page.caption}"></h2>
 		
 		<form action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
 		
