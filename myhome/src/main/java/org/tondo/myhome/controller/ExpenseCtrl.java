@@ -2,6 +2,7 @@ package org.tondo.myhome.controller;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
@@ -43,24 +45,24 @@ public class ExpenseCtrl {
 		return formDefault;
 	}
 	
+	@RequestMapping(value = "/current", method = RequestMethod.GET)
+	public String findForCurrentMonth(Model model) {
+		YearMonth now = YearMonth.now();
+		buildPageModel(model, expenseService.getExpenses(now.getMonthValue(), now.getYear()));
+		return "expense";
+	}
+	
+	@RequestMapping(value = "/query", method = RequestMethod.GET)
+	public String findByQuery(Model model, @RequestParam int month, @RequestParam int year) {
+		buildPageModel(model, expenseService.getExpenses(month, year));
+		model.addAttribute("inputEnabled", isCurrentMont(month, year));
+		return "expense";
+	}
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String findAll(Model model) {
-		
-		// values to combobox for expense type
-		DropdownListCreator<String> dpCreator = new DropdownListCreator<>(DropdownListCreator.STRING_KEY);
-		List<DropdownValue<String>> cbExpenseTypeValues = dpCreator
-			.addItems(enumService.getEnumValues(EnumNames.EXPENSES))
-			.values();
-		model.addAttribute("cbExpenseType", cbExpenseTypeValues);
-		
-		if (!model.containsAttribute("expenseForm")) {
-			model.addAttribute("expenseForm", getDefaultFormContent());
-		}
-		
-		// populate list
-		List<ExpenseDO> expenses = expenseService.getExpenses();
-		model.addAttribute("expenses", expenses);
-
+		buildPageModel(model, expenseService.getExpenses());
+		model.addAttribute("deleteEnabled", true);
 		return "expense";
 	}
 	
@@ -89,5 +91,28 @@ public class ExpenseCtrl {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		dateFormat.setLenient(false);
 		binder.registerCustomEditor(Date.class, "date", new CustomDateEditor(dateFormat, true));
+	}
+	
+	private void buildPageModel(Model model, List<ExpenseDO> expenses) {
+		// values to combobox for expense type
+		DropdownListCreator<String> dpCreator = new DropdownListCreator<>(DropdownListCreator.STRING_KEY);
+		List<DropdownValue<String>> cbExpenseTypeValues = dpCreator
+				.addItems(enumService.getEnumValues(EnumNames.EXPENSES)).values();
+		model.addAttribute("cbExpenseType", cbExpenseTypeValues);
+
+		if (!model.containsAttribute("expenseForm")) {
+			model.addAttribute("expenseForm", getDefaultFormContent());
+		}
+
+		// populate list
+		model.addAttribute("expenses", expenses);
+		// properties
+		model.addAttribute("inputEnabled", true);
+	}
+	
+	
+	private static boolean isCurrentMont(int month, int year) {
+		YearMonth now = YearMonth.now();
+		return now.getMonthValue() == month && now.getYear() == year;
 	}
 }

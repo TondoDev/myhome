@@ -21,8 +21,12 @@ public class ExpenseSvc {
 	private EnumSvc enumSvc;
 	
 	
+	public List<ExpenseDO> getExpenses(int month, int year) {
+		return iterableToDataObjectList(expenseRepo.findForMonthOrderByDateDesc(month, year));
+	}
+	
 	public List<ExpenseDO> getExpenses() {
-		return iterableToDataObjectList(expenseRepo.findAll());
+		return iterableToDataObjectList(expenseRepo.findAllByOrderByDateDesc());
 	}
 	
 	public void save(ExpenseDO expenseDo) {
