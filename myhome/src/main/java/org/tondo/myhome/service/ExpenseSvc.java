@@ -1,14 +1,19 @@
 package org.tondo.myhome.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.tondo.myhome.domain.Expense;
+import org.tondo.myhome.domain.ExpenseSummary;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
+import org.tondo.myhome.enumsvc.EnumValue;
 import org.tondo.myhome.repo.ExpenseRepository;
 
 @Service
@@ -22,11 +27,40 @@ public class ExpenseSvc {
 	
 	
 	public List<ExpenseDO> getExpenses(int month, int year) {
-		return iterableToDataObjectList(expenseRepo.findForMonthOrderByDateDesc(month, year));
+		return iterableToDataObjectList(expenseRepo.findForMonthOrderByDateDesc(month, year), this::toDataObject);
 	}
 	
 	public List<ExpenseDO> getExpenses() {
-		return iterableToDataObjectList(expenseRepo.findAllByOrderByDateDesc());
+		return iterableToDataObjectList(expenseRepo.findAllByOrderByDateDesc(), this::toDataObject);
+	}
+	
+	public List<ExpenseSummaryDO> getTotalSummary() {
+		List<ExpenseSummaryDO> categoryWithValue = iterableToDataObjectList(expenseRepo.sumary(), this::mapperExpenseSummary);
+		return constructSummaryForAllCategories(categoryWithValue);
+	}
+	
+	private List<ExpenseSummaryDO> constructSummaryForAllCategories(List<ExpenseSummaryDO> categoryWithValue) {
+		List<ExpenseSummaryDO> retVal = new ArrayList<>();
+		List<EnumValue> categories = this.enumSvc.getEnumValues(EnumNames.EXPENSES);
+		for (EnumValue ev : categories) {
+			boolean found = false;
+			for (ExpenseSummaryDO sumObj : categoryWithValue) {
+				if (ev.getValue().equals(sumObj.getExpenseType())) {
+					retVal.add(sumObj);
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
+				ExpenseSummaryDO empty = new ExpenseSummaryDO();
+				empty.setExpenseType(ev.getValue());
+				empty.setSum(BigDecimal.ZERO);
+				retVal.add(empty);
+			}
+		}
+		
+		return retVal;
 	}
 	
 	public void save(ExpenseDO expenseDo) {
@@ -62,12 +96,16 @@ public class ExpenseSvc {
 		return retVal;
 	}
 	
-	private List<ExpenseDO> iterableToDataObjectList(Iterable<Expense> iterable) {
-		List<ExpenseDO> retval = new ArrayList<>();
-		Iterator<Expense> iter = iterable.iterator();
-		while(iter.hasNext()) {
-			retval.add(toDataObject(iter.next()));
-		}
-		return retval;
+	public  ExpenseSummaryDO mapperExpenseSummary(ExpenseSummary source) {
+		ExpenseSummaryDO retVal = new ExpenseSummaryDO();
+		retVal.setExpenseType(source.getExpenseType());
+		retVal.setSum(source.getSum());
+		return retVal;
+	}
+	
+	private <T, S>  List<T> iterableToDataObjectList(Iterable<S> iterable, Function<S, T> func) {
+		return StreamSupport.stream(iterable.spliterator(), false)
+			.map(func)
+			.collect(Collectors.toList());
 	}
 }
