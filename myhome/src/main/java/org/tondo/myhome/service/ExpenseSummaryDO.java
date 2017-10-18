@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class ExpenseSummaryDO {
 
 	private String expenseType;
+	private String expenseTypeLabel;
 	private BigDecimal sum;
 	
 	public String getExpenseType() {
@@ -21,5 +22,14 @@ public class ExpenseSummaryDO {
 	
 	public void setSum(BigDecimal sum) {
 		this.sum = sum;
+	}
+	
+	
+	public String getExpenseTypeLabel() {
+		return expenseTypeLabel;
+	}
+	
+	public void setExpenseTypeLabel(String expenseTypeLabel) {
+		this.expenseTypeLabel = expenseTypeLabel;
 	}
 }

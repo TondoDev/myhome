@@ -35,18 +35,25 @@ public class ExpenseSvc {
 	}
 	
 	public List<ExpenseSummaryDO> getTotalSummary() {
-		List<ExpenseSummaryDO> categoryWithValue = iterableToDataObjectList(expenseRepo.sumary(), this::mapperExpenseSummary);
+		List<ExpenseSummaryDO> categoryWithValue = iterableToDataObjectList(expenseRepo.totalSummary(), this::mapperExpenseSummary);
 		return constructSummaryForAllCategories(categoryWithValue);
+	}
+	
+	public List<ExpenseSummaryDO> getSummaryByMonth(int mont, int year) {
+		List<ExpenseSummaryDO> categoriesWithValue = iterableToDataObjectList(expenseRepo.summaryByMonth(mont, year), this::mapperExpenseSummary);
+		return constructSummaryForAllCategories(categoriesWithValue);
 	}
 	
 	private List<ExpenseSummaryDO> constructSummaryForAllCategories(List<ExpenseSummaryDO> categoryWithValue) {
 		List<ExpenseSummaryDO> retVal = new ArrayList<>();
 		List<EnumValue> categories = this.enumSvc.getEnumValues(EnumNames.EXPENSES);
+		BigDecimal total = BigDecimal.ZERO;
 		for (EnumValue ev : categories) {
 			boolean found = false;
 			for (ExpenseSummaryDO sumObj : categoryWithValue) {
 				if (ev.getValue().equals(sumObj.getExpenseType())) {
 					retVal.add(sumObj);
+					total = total.add(sumObj.getSum());
 					found = true;
 					break;
 				}
@@ -55,10 +62,17 @@ public class ExpenseSvc {
 			if (!found) {
 				ExpenseSummaryDO empty = new ExpenseSummaryDO();
 				empty.setExpenseType(ev.getValue());
+				empty.setExpenseTypeLabel(ev.getLabel());
 				empty.setSum(BigDecimal.ZERO);
 				retVal.add(empty);
 			}
 		}
+		
+		ExpenseSummaryDO totalSum = new ExpenseSummaryDO();
+		totalSum.setExpenseType("TOTAL");
+		totalSum.setExpenseTypeLabel("Total");
+		totalSum.setSum(total);
+		retVal.add(totalSum);
 		
 		return retVal;
 	}
@@ -100,6 +114,7 @@ public class ExpenseSvc {
 		ExpenseSummaryDO retVal = new ExpenseSummaryDO();
 		retVal.setExpenseType(source.getExpenseType());
 		retVal.setSum(source.getSum());
+		retVal.setExpenseTypeLabel(enumSvc.resolve(source.getExpenseType(), EnumNames.EXPENSES));
 		return retVal;
 	}
 	

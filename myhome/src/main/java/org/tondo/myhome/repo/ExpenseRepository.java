@@ -15,5 +15,10 @@ public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 	// Projection
 	// all projected fields must have alias(even if they have same name in target object)
 	@Query("select e.expenseType as expenseType, sum(e.amount) as sum from #{#entityName} e group by e.expenseType")
-	Iterable<ExpenseSummary> sumary();
+	Iterable<ExpenseSummary> totalSummary();
+	
+	@Query("select e.expenseType as expenseType, sum(e.amount) as sum " +
+			"from #{#entityName} e where MONTH(e.date) = ?1 and YEAR(e.date) = ?2  " + 
+			"group by e.expenseType")
+	Iterable<ExpenseSummary> summaryByMonth(int month, int year);
 }

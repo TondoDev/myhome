@@ -26,6 +26,7 @@ import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
 import org.tondo.myhome.presentation.dropdown.DropdownValue;
 import org.tondo.myhome.service.ExpenseDO;
+import org.tondo.myhome.service.ExpenseSummaryDO;
 import org.tondo.myhome.service.ExpenseSvc;
 
 @Controller
@@ -49,6 +50,7 @@ public class ExpenseCtrl {
 	public String findForCurrentMonth(Model model) {
 		YearMonth now = YearMonth.now();
 		buildPageModel(model, expenseService.getExpenses(now.getMonthValue(), now.getYear()));
+		model.addAttribute("summary", this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()));
 		return "expense";
 	}
 	
@@ -56,6 +58,7 @@ public class ExpenseCtrl {
 	public String findByQuery(Model model, @RequestParam int month, @RequestParam int year) {
 		buildPageModel(model, expenseService.getExpenses(month, year));
 		model.addAttribute("inputEnabled", isCurrentMont(month, year));
+		model.addAttribute("summary", this.expenseService.getSummaryByMonth(month, year));
 		return "expense";
 	}
 	
@@ -63,6 +66,8 @@ public class ExpenseCtrl {
 	public String findAll(Model model) {
 		buildPageModel(model, expenseService.getExpenses());
 		model.addAttribute("deleteEnabled", true);
+		List<ExpenseSummaryDO> summmary = this.expenseService.getTotalSummary();
+		model.addAttribute("summary", summmary);
 		return "expense";
 	}
 	
@@ -87,7 +92,6 @@ public class ExpenseCtrl {
 	// is calling 
 	@InitBinder
 	public void paramBinding(WebDataBinder binder) {
-		System.out.println("-- init binder");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 		dateFormat.setLenient(false);
 		binder.registerCustomEditor(Date.class, "date", new CustomDateEditor(dateFormat, true));

@@ -29,6 +29,19 @@
 			<p  th:if="${#fields.hasErrors('*')}" style="color: red" >Some errors have occurred!</p>
 		</form>
 		
+		<div th:if="${summary != null}">
+			<!-- <h3 th:text="#{page.summary.header}">"a</h3>  -->
+			<table>
+				<tr>
+					<th th:each="sum : ${summary}" th:text="${sum.expenseTypeLabel}" />
+				</tr>
+				<tr>
+					<td th:each="sum : ${summary}" th:text="${sum.sum}" />
+				</tr>
+			</table>
+			<br />
+		</div>
+		
 		<table>
 			<tr>
 				<th>ID</th>
