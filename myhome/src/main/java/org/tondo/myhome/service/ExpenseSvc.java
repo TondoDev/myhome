@@ -31,7 +31,7 @@ public class ExpenseSvc {
 	}
 	
 	public List<ExpenseDO> getExpenses() {
-		return iterableToDataObjectList(expenseRepo.findAllByOrderByDateDesc(), this::toDataObject);
+		return iterableToDataObjectList(expenseRepo.findAllByOrderByDateDescIdDesc(), this::toDataObject);
 	}
 	
 	public List<ExpenseSummaryDO> getTotalSummary() {

@@ -7,10 +7,10 @@ import org.tondo.myhome.domain.ExpenseSummary;
 
 
 public interface ExpenseRepository extends CrudRepository<Expense, Long> {
-	@Query("select e from #{#entityName} e where MONTH(e.date) = ?1 and YEAR(e.date) = ?2 order by e.date desc")
+	@Query("select e from #{#entityName} e where MONTH(e.date) = ?1 and YEAR(e.date) = ?2 order by e.date desc, e.id desc")
 	Iterable<Expense> findForMonthOrderByDateDesc(int month, int year);
 	
-	Iterable<Expense> findAllByOrderByDateDesc();
+	Iterable<Expense> findAllByOrderByDateDescIdDesc();
 	
 	// Projection
 	// all projected fields must have alias(even if they have same name in target object)
