@@ -9,12 +9,12 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.tondo.myhome.domain.Expense;
-import org.tondo.myhome.domain.ExpenseSummary;
+import org.tondo.myhome.data.domain.Expense;
+import org.tondo.myhome.data.domain.ExpenseSummary;
+import org.tondo.myhome.data.repo.ExpenseRepository;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.enumsvc.EnumValue;
-import org.tondo.myhome.repo.ExpenseRepository;
 
 @Service
 public class ExpenseSvc {
@@ -85,7 +85,6 @@ public class ExpenseSvc {
 	public void delete(Long id) {
 		expenseRepo.delete(id);
 	}
-	
 	
 	public Expense fromDataObject(ExpenseDO data) {
 		Expense retVal = new Expense();
