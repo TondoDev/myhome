@@ -9,9 +9,12 @@
 		
 		<form th:if="${inputEnabled}" action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
 		
+		
+		<p th:if="${expenseForm.date != null}" th:text="|${#dates.format(expenseForm.date, 'MMMM')} ${#dates.format(expenseForm.date, 'YYYY')}|">Date</p>
+		<!-- 
 			<p>Date <input type="text" name="date" th:value="${expenseForm.date != null} ? ${#dates.format(expenseForm.date, 'dd.MM.yyyy')} : null" /> </p>
 			<p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p>
-			
+		 -->
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
 			<p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Incorrect date</p>
 			
@@ -27,11 +30,10 @@
 			
 			<p><input  type="submit" value="Submit"/></p>
 			<p  th:if="${#fields.hasErrors('*')}" style="color: red" >Some errors have occurred!</p>
-			<input type="hidden" name="target" value="zmrd" />
+			<!-- <input type="hidden" name="target" value="${target}" />  -->
 		</form>
 		
 		<div th:if="${summary != null}">
-			<!-- <h3 th:text="#{page.summary.header}">"a</h3>  -->
 			<table>
 				<tr>
 					<th th:each="sum : ${summary}" th:text="${sum.expenseTypeLabel}" />
@@ -45,7 +47,6 @@
 		
 		<table>
 			<tr>
-				<th>ID</th>
 				<th>Date</th>
 				<th>Type</th>
 				<th>Amount</th>
@@ -53,7 +54,6 @@
 			</tr>
 
 			<tr th:each="exp : ${expenses}">
-				<td th:text="${exp.id}"></td>
 				<td th:text="${#dates.format(exp.date, 'dd.MM.yyyy')}"></td>
 				<td th:text="${exp.expenseTypeLabel}"></td>
 				<td th:text="${exp.amount}"></td>
