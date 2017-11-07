@@ -1,6 +1,6 @@
 package org.tondo.myhome.data;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -26,6 +26,6 @@ public class MyHomeApplicationTests {
 	public void contextLoads() {
 		List<Expense> list = userRepository.findAll(ExpenseQuerySpecification.create());
 		System.out.println(list.size());
-		assertNull(list);
+		assertTrue(list.size() > 0);
 	}
 }
