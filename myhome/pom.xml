@@ -54,6 +54,42 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>copy-app</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-app</id>
+								<phase>install</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<overwrite>true</overwrite>
+									<outputDirectory>C:\MyUtils\myhome\</outputDirectory>
+									<resources>
+										<resource>
+											<directory>target</directory>
+											<filtering>false</filtering>
+											<includes>
+												<include>${build.finalName}.jar</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -66,32 +102,6 @@
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-app</id>
-						<phase>install</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<overwrite>true</overwrite>
-							<outputDirectory>C:\MyUtils\myhome\</outputDirectory>
-							<resources>
-								<resource>
-									<directory>target</directory>
-									<filtering>false</filtering>
-									<includes>
-										<include>${build.finalName}.jar</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
