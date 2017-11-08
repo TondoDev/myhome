@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
@@ -55,12 +54,13 @@ public class ExpenseCtrl {
 		return "detail";
 	}
 	
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
-	public String findByQuery(Model model, @RequestParam int month, @RequestParam int year) {
+	@RequestMapping(value = "/year/{year}/month/{month}", method = RequestMethod.GET)
+	public String findByQuery(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
 		buildPageModel(model, expenseService.getExpenses(month, year));
 		model.addAttribute("inputEnabled", isCurrentMont(month, year));
+		model.addAttribute("target", "/expense/year/" + year+ "/month/" + month);
 		model.addAttribute("summary", this.expenseService.getSummaryByMonth(month, year));
-		return "expense";
+		return "detail";
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
