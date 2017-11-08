@@ -50,8 +50,9 @@ public class ExpenseCtrl {
 	public String findForCurrentMonth(Model model) {
 		YearMonth now = YearMonth.now();
 		buildPageModel(model, expenseService.getExpenses(now.getMonthValue(), now.getYear()));
+		model.addAttribute("target", "/expense/current");
 		model.addAttribute("summary", this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()));
-		return "expense";
+		return "detail";
 	}
 	
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
@@ -72,7 +73,7 @@ public class ExpenseCtrl {
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String addExpense(@ModelAttribute("expenseForm") @Valid ExpenseDO expense, BindingResult bindingResult, RedirectAttributes redirect) {
+	public String addExpense(@ModelAttribute("target") String target, @ModelAttribute("expenseForm") @Valid ExpenseDO expense, BindingResult bindingResult, RedirectAttributes redirect) {
 		if (!bindingResult.hasErrors()) {
 			expenseService.save(expense);
 			expense.setNote(null);
@@ -80,7 +81,7 @@ public class ExpenseCtrl {
 			redirect.addFlashAttribute("org.springframework.validation.BindingResult.expenseForm", bindingResult);
 		}
 		redirect.addFlashAttribute("expenseForm", expense);
-		return "redirect:/expense/";
+		return target == null ? "redirect:/expense/" : ("redirect:" + target); 
 	}
 	
 	@RequestMapping(value="/{expenseId}", method = RequestMethod.DELETE)
