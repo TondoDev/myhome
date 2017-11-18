@@ -2,9 +2,14 @@ package org.tondo.myhome.controller;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.validation.Valid;
 
@@ -25,6 +30,7 @@ import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
 import org.tondo.myhome.presentation.dropdown.DropdownValue;
 import org.tondo.myhome.service.ExpenseDO;
+import org.tondo.myhome.service.ExpenseInDayDO;
 import org.tondo.myhome.service.ExpenseSummaryDO;
 import org.tondo.myhome.service.ExpenseSvc;
 
@@ -39,15 +45,25 @@ public class ExpenseCtrl {
 	private EnumSvc enumService;
 	
 	public ExpenseDO getDefaultFormContent() {
-		ExpenseDO formDefault = new ExpenseDO();
-		formDefault.setDate(new Date());
-		formDefault.setAmount(BigDecimal.valueOf(200));
+		// as default is used subtype instance
+		// when supertype ExpenseDO is needed redundant fields 
+		// from subtype are ignored
+		ExpenseInDayDO formDefault = new ExpenseInDayDO();
+		LocalDate now = LocalDate.now();
+		Instant instant = now.atStartOfDay(ZoneId.systemDefault()).toInstant();
+		formDefault.setDate(Date.from(instant));
+		formDefault.setDay(now.getDayOfMonth());
+		formDefault.setAmount(BigDecimal.valueOf(20));
 		return formDefault;
 	}
 	
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public String findForCurrentMonth(Model model) {
 		YearMonth now = YearMonth.now();
+		
+		DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
+		cbDays.addItems(IntStream.rangeClosed(1, now.lengthOfMonth()).boxed().toArray(size -> new Integer[size]));
+		model.addAttribute("cbDays", cbDays.values());
 		//now.lengthOfMonth();
 		buildPageModel(model, expenseService.getExpenses(now.getMonthValue(), now.getYear()));
 		model.addAttribute("target", "/expense/current");
@@ -74,8 +90,12 @@ public class ExpenseCtrl {
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String addExpense(@ModelAttribute("target") String target, @ModelAttribute("expenseForm") @Valid ExpenseDO expense, BindingResult bindingResult, RedirectAttributes redirect) {
+	public String addExpense(@ModelAttribute("target") String target, @ModelAttribute("expenseForm") @Valid ExpenseInDayDO expense, BindingResult bindingResult, RedirectAttributes redirect) {
 		if (!bindingResult.hasErrors()) {
+			Calendar selectedDate = Calendar.getInstance();
+			selectedDate.setTime(expense.getDate());
+			selectedDate.set(Calendar.DAY_OF_MONTH, expense.getDay());
+			expense.setDate(selectedDate.getTime());
 			expenseService.save(expense);
 			expense.setNote(null);
 		} else {
@@ -127,7 +147,6 @@ public class ExpenseCtrl {
 		// properties
 		model.addAttribute("inputEnabled", true);
 	}
-	
 	
 	private static boolean isCurrentMont(int month, int year) {
 		YearMonth now = YearMonth.now();

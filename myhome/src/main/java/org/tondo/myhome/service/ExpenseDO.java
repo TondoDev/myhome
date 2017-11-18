@@ -3,7 +3,7 @@ package org.tondo.myhome.service;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.validation.constraints.Min;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,7 +15,7 @@ public class ExpenseDO {
 	private Date date;
 	
 	@NotNull
-	@Min(1)
+	@DecimalMin("0.1")
 	private BigDecimal amount;
 	
 	@NotNull

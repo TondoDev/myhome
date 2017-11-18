@@ -42,6 +42,14 @@ public class DropdownListCreator<T> {
 		return this;
 	}
 	
+	public DropdownListCreator<T> addItems(T[] items) {
+		for (T i : items) {
+			this.values.add(new DropdownValue<T>(i, i.toString()));
+		}
+		
+		return this;
+	}
+	
 	public List<DropdownValue<T>> values() {
 		return this.values;
 	}
