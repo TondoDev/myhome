@@ -27,7 +27,6 @@
 			
 			<p><input  type="submit" value="Submit"/></p>
 			<p  th:if="${#fields.hasErrors('*')}" style="color: red" >Some errors have occurred!</p>
-			<input type="hidden" name="target" value="zmrd" />
 		</form>
 		
 		<div th:if="${summary != null}">

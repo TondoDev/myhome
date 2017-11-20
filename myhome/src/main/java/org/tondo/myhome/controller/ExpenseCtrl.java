@@ -73,6 +73,11 @@ public class ExpenseCtrl {
 	
 	@RequestMapping(value = "/year/{year}/month/{month}", method = RequestMethod.GET)
 	public String findByQuery(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
+		DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
+		YearMonth now = YearMonth.now();
+		cbDays.addItems(IntStream.rangeClosed(1, now.lengthOfMonth()).boxed().toArray(size -> new Integer[size]));
+		model.addAttribute("cbDays", cbDays.values());
+		
 		buildPageModel(model, expenseService.getExpenses(month, year));
 		model.addAttribute("inputEnabled", isCurrentMont(month, year));
 		model.addAttribute("target", "/expense/year/" + year+ "/month/" + month);
