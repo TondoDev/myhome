@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
+import org.tondo.myhome.pagemodel.ExpensePageModel;
 import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
 import org.tondo.myhome.presentation.dropdown.DropdownValue;
 import org.tondo.myhome.service.ExpenseDO;
@@ -60,14 +61,21 @@ public class ExpenseCtrl {
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public String findForCurrentMonth(Model model) {
 		YearMonth now = YearMonth.now();
+		new ExpensePageModel(model, now.getMonthValue(), now.getYear())
+			.dataSupplier(() -> expenseService.getExpenses(now.getMonthValue(), now.getYear()))
+			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
+			.summarySupplier(() -> this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()) )
+			.target("/expense/current")
+			.build();
 		
-		DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
-		cbDays.addItems(IntStream.rangeClosed(1, now.lengthOfMonth()).boxed().toArray(size -> new Integer[size]));
-		model.addAttribute("cbDays", cbDays.values());
-		//now.lengthOfMonth();
-		buildPageModel(model, expenseService.getExpenses(now.getMonthValue(), now.getYear()));
-		model.addAttribute("target", "/expense/current");
-		model.addAttribute("summary", this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()));
+		
+//		DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
+//		cbDays.addItems(IntStream.rangeClosed(1, now.lengthOfMonth()).boxed().toArray(size -> new Integer[size]));
+//		model.addAttribute("cbDays", cbDays.values());
+//		//now.lengthOfMonth();
+//		buildPageModel(model, expenseService.getExpenses(now.getMonthValue(), now.getYear()));
+//		model.addAttribute("target", "/expense/current");
+//		model.addAttribute("summary", this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()));
 		return "detail";
 	}
 	

@@ -1,0 +1,107 @@
+package org.tondo.myhome.pagemodel;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+
+import org.springframework.ui.Model;
+import org.tondo.myhome.enumsvc.EnumValue;
+import org.tondo.myhome.presentation.dropdown.DropdownListCreator;
+import org.tondo.myhome.presentation.dropdown.DropdownValue;
+import org.tondo.myhome.service.ExpenseDO;
+import org.tondo.myhome.service.ExpenseInDayDO;
+import org.tondo.myhome.service.ExpenseSummaryDO;
+
+public class ExpensePageModel {
+
+	private Model model;
+	private boolean inputEnabled;
+	private int month;
+	private int year;
+	private Supplier<List<EnumValue>> cbTypesSupplier;
+	private Supplier<List<ExpenseDO>> dataSupplier;
+	private Supplier<List<ExpenseSummaryDO>> summarySupplier;;
+	private String target;
+	
+	
+	public ExpensePageModel(Model model, int month, int year) {
+		this.model = model;
+		this.inputEnabled = true;
+		this.month = month;
+		this.year = year;
+	}
+	
+	public ExpensePageModel dataSupplier(Supplier<List<ExpenseDO>> data) {
+		this.dataSupplier = data;
+		return this;
+	}
+	
+	// for deffered call, because this list is not always required
+	public ExpensePageModel typesSupplier(Supplier<List<EnumValue>> typesSupplier) {
+		this.cbTypesSupplier = typesSupplier;
+		return this;
+	}
+	
+	public ExpensePageModel summarySupplier(Supplier<List<ExpenseSummaryDO>> summarySupplier) {
+		this.summarySupplier = summarySupplier;
+		return this;
+	}
+	
+	public ExpensePageModel inputEnabled(boolean enabled) {
+		this.inputEnabled = enabled;
+		return this;
+	}
+	
+	public ExpensePageModel target(String target) {
+		this.target = target;
+		return this;
+	}
+	
+	public Model build() {
+		validate();
+		
+		if (this.inputEnabled) {
+			YearMonth examinedMonth = YearMonth.of(this.year, this.month);
+			DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
+			cbDays.addItems(IntStream.rangeClosed(1, examinedMonth.lengthOfMonth()).boxed().toArray(size -> new Integer[size]));
+			model.addAttribute("cbDays", cbDays.values());
+			
+			DropdownListCreator<String> dpCreator = new DropdownListCreator<>(DropdownListCreator.STRING_KEY);
+			List<DropdownValue<String>> cbExpenseTypeValues = dpCreator
+					.addItems(this.cbTypesSupplier.get()).values();
+			model.addAttribute("cbExpenseType", cbExpenseTypeValues);
+
+			if (!model.containsAttribute("expenseForm")) {
+				model.addAttribute("expenseForm", getDefaultFormContent());
+			}
+		}
+	
+		// populate list
+		model.addAttribute("expenses", this.dataSupplier.get());
+		model.addAttribute("summary", this.summarySupplier.get());
+		// properties
+		model.addAttribute("inputEnabled", this.inputEnabled);
+		model.addAttribute("target", this.target);
+		return this.model;
+	}
+	
+	protected void validate() {
+		
+	}
+	
+	protected ExpenseInDayDO getDefaultFormContent() {
+		ExpenseInDayDO formDefault = new ExpenseInDayDO();
+		LocalDate now = LocalDate.now();
+		Instant instant = now.atStartOfDay(ZoneId.systemDefault()).toInstant();
+		formDefault.setDate(Date.from(instant));
+		formDefault.setDay(now.getDayOfMonth());
+		formDefault.setAmount(BigDecimal.valueOf(20));
+		return formDefault;
+	}
+}
