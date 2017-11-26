@@ -63,7 +63,7 @@ public class ExpensePageModel {
 		return this;
 	}
 	
-	public Model build() {
+	public Model apply() {
 		validate();
 		
 		if (this.inputEnabled) {
@@ -95,7 +95,7 @@ public class ExpensePageModel {
 		
 	}
 	
-	protected ExpenseInDayDO getDefaultFormContent() {
+	private ExpenseInDayDO getDefaultFormContent() {
 		ExpenseInDayDO formDefault = new ExpenseInDayDO();
 		LocalDate now = LocalDate.now();
 		Instant instant = now.atStartOfDay(ZoneId.systemDefault()).toInstant();
