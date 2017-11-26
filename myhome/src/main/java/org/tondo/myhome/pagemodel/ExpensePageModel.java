@@ -67,10 +67,7 @@ public class ExpensePageModel {
 		validate();
 		
 		if (this.inputEnabled) {
-			YearMonth examinedMonth = YearMonth.of(this.year, this.month);
-			DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
-			cbDays.addItems(IntStream.rangeClosed(1, examinedMonth.lengthOfMonth()).boxed().toArray(size -> new Integer[size]));
-			model.addAttribute("cbDays", cbDays.values());
+			model.addAttribute("cbDays", createDaysCombo());
 			
 			DropdownListCreator<String> dpCreator = new DropdownListCreator<>(DropdownListCreator.STRING_KEY);
 			List<DropdownValue<String>> cbExpenseTypeValues = dpCreator
@@ -93,6 +90,22 @@ public class ExpensePageModel {
 	
 	protected void validate() {
 		
+	}
+	
+	private List<DropdownValue<Integer>> createDaysCombo() {
+		LocalDate current = LocalDate.now();
+		YearMonth examinedMonth = YearMonth.of(this.year, this.month);
+		int minDay = 1;
+		int maxDay;
+		if(examinedMonth.isBefore(YearMonth.from(current))) {
+			maxDay = examinedMonth.lengthOfMonth();
+		} else {
+			maxDay = current.getDayOfMonth();
+		}
+		
+		DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
+		cbDays.addItems(IntStream.rangeClosed(minDay, maxDay).boxed().toArray(size -> new Integer[size]));
+		return cbDays.values();
 	}
 	
 	private ExpenseInDayDO getDefaultFormContent() {
