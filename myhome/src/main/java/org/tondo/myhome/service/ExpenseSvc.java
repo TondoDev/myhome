@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.tondo.myhome.data.domain.Expense;
 import org.tondo.myhome.data.domain.ExpenseSummary;
 import org.tondo.myhome.data.repo.ExpenseRepository;
+import org.tondo.myhome.dto.ExpenseDO;
+import org.tondo.myhome.dto.ExpenseSummaryDO;
 import org.tondo.myhome.enumsvc.EnumNames;
 import org.tondo.myhome.enumsvc.EnumSvc;
 import org.tondo.myhome.enumsvc.EnumValue;
