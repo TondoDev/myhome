@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title th:text="#{page.title}">Expenses</title>
+	</head>
+	<body>
+		<h2 th:text="#{page.caption}"></h2>
+		
+		<form th:if="${inputEnabled}" action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
+		
+		<p>
+			Date
+			<select th:field="*{day}">
+					<option th:each="day : ${cbDays}" th:value="${day.key}" th:text="${day.label}"/>
+			</select> 
+			<span  th:text="${#dates.format(expenseForm.date, 'MMMM YYYY')}">Januar 2017</span>
+		</p>		
+			<p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p>
+		
+			<p>Amount <input type="text" th:field="*{amount}" /> </p>
+			<p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Incorrect date</p>
+			
+			<p>Type 
+				<select th:field="*{expenseType}">
+					<option th:each="expType : ${cbExpenseType}" th:value="${expType.key}" th:text="${expType.label}"/>
+				</select> 
+			</p>
+			<p th:if="${#fields.hasErrors('expenseType')}" th:errors="*{expenseType}">Incorrect date</p>
+			
+			<p>Note <input type="text" th:field="*{note}" /> </p>
+			<p th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Incorrect date</p>
+			
+			<p><input  type="submit" value="Submit"/></p>
+			<p  th:if="${#fields.hasErrors('*')}" style="color: red" >Some errors have occurred!</p>
+			<input type="hidden" name="target" th:value="@{${target}}" />
+			<input type="hidden" name="date" th:value="${#dates.format(expenseForm.date, 'dd.MM.yyyy')}" />
+		</form>
+		
+		<div th:if="${summary != null}">
+			<table>
+				<tr>
+					<th th:each="sum : ${summary}" th:text="${sum.expenseTypeLabel}" />
+				</tr>
+				<tr>
+					<td th:each="sum : ${summary}" th:text="${sum.sum}" />
+				</tr>
+			</table>
+			<br />
+		</div>
+		
+		<table>
+			<tr>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Amount</th>
+				<th>Note</th>
+			</tr>
+
+			<tr th:each="exp : ${expenses}">
+				<td th:text="${#dates.format(exp.date, 'dd.MM.yyyy')}"></td>
+				<td th:text="${exp.expenseTypeLabel}"></td>
+				<td th:text="${exp.amount}"></td>
+				<td th:text="${exp.note}"></td>
+				<td th:if="${deleteEnabled}">
+					<form action="#" th:action="@{'/expense/{id}'(id=${exp.id})}" th:method="delete">
+						<input  type="submit" value="Delete"/>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

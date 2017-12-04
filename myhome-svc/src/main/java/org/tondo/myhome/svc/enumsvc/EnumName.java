@@ -1,4 +1,4 @@
-package org.tondo.myhome.enumsvc;
+package org.tondo.myhome.svc.enumsvc;
 
 public class EnumName {
 
