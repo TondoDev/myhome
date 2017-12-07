@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.tondo</groupId>
+	<groupId>org.tondo.myhome</groupId>
 	<artifactId>myhome</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>My Home</name>
-	<description>Demo project for Spring Boot</description>
-
+	<description>Manage home resources</description>
+	
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -23,32 +23,13 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.tondo.myhome</groupId>
-			<artifactId>myhome-data</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.tondo.myhome</groupId>
-			<artifactId>myhome-dto</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	
+	<modules>
+		<module>myhome-thymeleaf</module>
+		<module>myhome-data</module>
+		<module>myhome-dto</module>
+		<module>myhome-svc</module>
+	</modules>
 
 	<profiles>
 		<profile>
@@ -73,7 +54,7 @@
 											<directory>target</directory>
 											<filtering>false</filtering>
 											<includes>
-												<include>${build.finalName}.jar</include>
+												<include>${project.build.finalName}.jar</include>
 											</includes>
 										</resource>
 									</resources>
@@ -88,10 +69,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
