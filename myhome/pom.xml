@@ -54,7 +54,7 @@
 											<directory>target</directory>
 											<filtering>false</filtering>
 											<includes>
-												<include>${project.build.finalName}.jar</include>
+												<include>myhome-thymeleaf-${project.version}.jar</include>
 											</includes>
 										</resource>
 									</resources>
