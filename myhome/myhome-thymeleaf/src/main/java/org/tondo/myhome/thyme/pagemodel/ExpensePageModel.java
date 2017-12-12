@@ -85,6 +85,7 @@ public class ExpensePageModel {
 		// properties
 		model.addAttribute("inputEnabled", this.inputEnabled);
 		model.addAttribute("target", this.target);
+		model.addAttribute("deleteEnabled", this.inputEnabled);
 		return this.model;
 	}
 	

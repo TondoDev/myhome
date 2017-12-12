@@ -26,6 +26,8 @@ public class ExpenseDO {
 	@Size(max=100)
 	private String note;
 	
+	private boolean editable;
+	
 	public Long getId() {
 		return id;
 	}
@@ -72,5 +74,13 @@ public class ExpenseDO {
 	
 	public void setNote(String note) {
 		this.note = note;
+	}
+	
+	public boolean isEditable() {
+		return editable;
+	}
+	
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 }

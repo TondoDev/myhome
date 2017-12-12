@@ -62,7 +62,7 @@
 				<td th:text="${exp.expenseTypeLabel}"></td>
 				<td th:text="${exp.amount}"></td>
 				<td th:text="${exp.note}"></td>
-				<td th:if="${deleteEnabled}">
+				<td th:if="${deleteEnabled and exp.editable}">
 					<form action="#" th:action="@{'/expense/{id}'(id=${exp.id})}" th:method="delete">
 						<input  type="submit" value="Delete"/>
 					</form>

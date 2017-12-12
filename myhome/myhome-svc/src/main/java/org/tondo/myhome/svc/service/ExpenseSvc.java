@@ -1,7 +1,10 @@
 package org.tondo.myhome.svc.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -95,7 +98,7 @@ public class ExpenseSvc {
 		retVal.setDate(data.getDate());
 		retVal.setExpenseType(data.getExpenseType());
 		retVal.setNote(data.getNote());
-		
+		retVal.setCreated(new Date());
 		return retVal;
 	}
 	
@@ -108,6 +111,9 @@ public class ExpenseSvc {
 		retVal.setNote(data.getNote());
 		retVal.setExpenseTypeLabel(enumSvc.resolve(data.getExpenseType(), EnumNames.EXPENSES));
 		
+		// TODO ineffective creating of today date
+		LocalDate today = LocalDate.now();
+		retVal.setEditable(today.equals(toLocalDate(data.getCreated())));
 		return retVal;
 	}
 	
@@ -123,5 +129,9 @@ public class ExpenseSvc {
 		return StreamSupport.stream(iterable.spliterator(), false)
 			.map(func)
 			.collect(Collectors.toList());
+	}
+	
+	private static LocalDate toLocalDate(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 }
