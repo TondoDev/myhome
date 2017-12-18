@@ -88,6 +88,32 @@ public class ExpenseSvc {
 	}
 	
 	public void delete(Long id) {
+		this.delete(id, true);
+	}
+	
+	/**
+	 * Delete expense by ID
+	 * @param id id of expense
+	 * @param admin mode, when <code>true</code> no checks are performed against deleting ID. 
+	 * Otherwise it checks if entity exists, and if can be deleted according to creation date.
+	 * 
+	 */
+	public void delete(Long id, boolean admin) {
+		
+		if (!admin) {
+			Expense entity = expenseRepo.findOne(id);
+			if (entity == null) {
+				// throw error
+				System.err.println("Expense with id: " + id + " not found!");
+				return;
+			}
+			
+			if (!LocalDate.now().equals(toLocalDate(entity.getCreated()))) {
+				System.err.println("Can't delete expense older than from today!");
+				return;
+			}
+		}
+		
 		expenseRepo.delete(id);
 	}
 	

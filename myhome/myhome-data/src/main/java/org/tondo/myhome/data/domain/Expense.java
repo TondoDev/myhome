@@ -24,7 +24,7 @@ public class Expense {
 	@Column(nullable = false)
 	private String expenseType;
 	
-	// @Column(nullable = false, columnDefinition="timestamp not null default '2017-01-01'")
+	//@Column(nullable = false, columnDefinition="timestamp not null default '2017-01-01'")
 	@Column(nullable = false)
 	private Date created;
 	

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.tondo.myhome.dto.ExpenseDO;
 import org.tondo.myhome.dto.ExpenseInDayDO;
@@ -103,7 +104,13 @@ public class ExpenseCtrl {
 	}
 	
 	@RequestMapping(value="/{expenseId}", method = RequestMethod.DELETE)
-	public String deleteExpense(@PathVariable Long expenseId) {
+	public String deleteExpense(@PathVariable Long expenseId, @RequestParam(value = "target", required = false) String target) {
+		this.expenseService.delete(expenseId, false);
+		return target == null || target.isEmpty() ? "redirect:/expense/" : ("redirect:" +  target);
+	}
+	
+	@RequestMapping(value="/admin/{expenseId}", method = RequestMethod.DELETE)
+	public String deleteExpenseAdmin(@PathVariable Long expenseId) {
 		this.expenseService.delete(expenseId);
 		return "redirect:/expense/";
 	}
