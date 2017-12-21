@@ -9,7 +9,7 @@
 		
 		<form th:if="${inputEnabled}" action="#" th:action="@{/expense/admin}" method="post" th:object="${expenseForm}">
 		
-			<p>Date <input type="text" name="date" th:value="${expenseForm.date != null} ? ${#dates.format(expenseForm.date, 'dd.MM.yyyy')} : null" /> </p>
+			<p>Date <input type="text" name="date" th:value="${expenseForm.date != null} ? ${#temporals.format(expenseForm.date, 'dd.MM.yyyy')} : null" /> </p>
 			<p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p>
 			
 			<p>Amount <input type="text" th:field="*{amount}" /> </p>
@@ -53,7 +53,7 @@
 
 			<tr th:each="exp : ${expenses}">
 				<td th:text="${exp.id}"></td>
-				<td th:text="${#dates.format(exp.date, 'dd.MM.yyyy')}"></td>
+				<td th:text="${#temporals.format(exp.date, 'dd.MM.yyyy')}"></td>
 				<td th:text="${exp.expenseTypeLabel}"></td>
 				<td th:text="${exp.amount}"></td>
 				<td th:text="${exp.note}"></td>

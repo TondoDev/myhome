@@ -1,8 +1,8 @@
 package org.tondo.myhome.thyme.controller;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -78,10 +78,8 @@ public class ExpenseCtrl {
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public String addExpense(@ModelAttribute("target") String target, @ModelAttribute("expenseForm") @Valid ExpenseInDayDO expense, BindingResult bindingResult, RedirectAttributes redirect) {
 		if (!bindingResult.hasErrors()) {
-			Calendar selectedDate = Calendar.getInstance();
-			selectedDate.setTime(expense.getDate());
-			selectedDate.set(Calendar.DAY_OF_MONTH, expense.getDay());
-			expense.setDate(selectedDate.getTime());
+			LocalDate modified = expense.getDate().withDayOfMonth(expense.getDay());
+			expense.setDate(modified);
 			expenseService.save(expense);
 			expense.setNote(null);
 		} else {

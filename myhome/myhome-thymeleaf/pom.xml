@@ -2,13 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>myhome-thymeleaf</artifactId>
-	
+
 	<parent>
 		<groupId>org.tondo.myhome</groupId>
 		<artifactId>myhome</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.tondo.myhome</groupId>
@@ -24,10 +24,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- Required for #temporals utilities in templates for processing Java 8 date types -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+			</dependency>
 	</dependencies>
 
 	<build>
@@ -35,13 +40,10 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- 
-				<configuration>
-					<mainClass>org.tondo.myhome.thyme.MyHomeThymeleafApplication</mainClass>
-				</configuration>
-				 -->
+				<!-- <configuration> <mainClass>org.tondo.myhome.thyme.MyHomeThymeleafApplication</mainClass> 
+					</configuration> -->
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

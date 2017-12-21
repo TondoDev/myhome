@@ -14,7 +14,7 @@
 			<select th:field="*{day}">
 					<option th:each="day : ${cbDays}" th:value="${day.key}" th:text="${day.label}"/>
 			</select> 
-			<span  th:text="${#dates.format(expenseForm.date, 'MMMM YYYY')}">Januar 2017</span>
+			<span  th:text="${#temporals.format(expenseForm.date, 'MMMM YYYY')}">Januar 2017</span>
 		</p>		
 			<p th:if="${#fields.hasErrors('date')}" th:errors="*{date}">Incorrect date</p>
 		
@@ -34,7 +34,7 @@
 			<p><input  type="submit" value="Submit"/></p>
 			<p  th:if="${#fields.hasErrors('*')}" style="color: red" >Some errors have occurred!</p>
 			<input type="hidden" name="target" th:value="@{${target}}" />
-			<input type="hidden" name="date" th:value="${#dates.format(expenseForm.date, 'dd.MM.yyyy')}" />
+			<input type="hidden" name="date" th:value="${#temporals.format(expenseForm.date, 'dd.MM.yyyy')}" />
 		</form>
 		
 		<div th:if="${summary != null}">
@@ -58,7 +58,7 @@
 			</tr>
 
 			<tr th:each="exp : ${expenses}">
-				<td th:text="${#dates.format(exp.date, 'dd.MM.yyyy')}"></td>
+				<td th:text="${#temporals.format(exp.date, 'dd.MM.yyyy')}"></td>
 				<td th:text="${exp.expenseTypeLabel}"></td>
 				<td th:text="${exp.amount}"></td>
 				<td th:text="${exp.note}"></td>

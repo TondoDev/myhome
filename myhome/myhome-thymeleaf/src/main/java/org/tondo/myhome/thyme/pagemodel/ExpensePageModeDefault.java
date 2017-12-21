@@ -1,7 +1,7 @@
 package org.tondo.myhome.thyme.pagemodel;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -67,7 +67,7 @@ public class ExpensePageModeDefault {
 	
 	private ExpenseDO getDefaultFormContent() {
 		ExpenseDO formDefault = new ExpenseDO();
-		formDefault.setDate(new Date());
+		formDefault.setDate(LocalDate.now());
 		formDefault.setAmount(BigDecimal.valueOf(20));
 		return formDefault;
 	}

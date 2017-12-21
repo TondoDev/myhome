@@ -1,7 +1,7 @@
 package org.tondo.myhome.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -12,7 +12,7 @@ public class ExpenseDO {
 	private Long id;
 	
 	@NotNull
-	private Date date;
+	private LocalDate date;
 	
 	@NotNull
 	@DecimalMin("0.1")
@@ -36,11 +36,11 @@ public class ExpenseDO {
 		this.id = id;
 	}
 	
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 	
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 	

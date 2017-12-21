@@ -121,7 +121,7 @@ public class ExpenseSvc {
 		Expense retVal = new Expense();
 		retVal.setId(data.getId());
 		retVal.setAmount(data.getAmount());
-		retVal.setDate(data.getDate());
+		retVal.setDate(toUtilDate(data.getDate()));
 		retVal.setExpenseType(data.getExpenseType());
 		retVal.setNote(data.getNote());
 		retVal.setCreated(new Date());
@@ -132,7 +132,7 @@ public class ExpenseSvc {
 		ExpenseDO retVal = new ExpenseDO();
 		retVal.setId(data.getId());
 		retVal.setAmount(data.getAmount());
-		retVal.setDate(data.getDate());
+		retVal.setDate(toLocalDate(data.getDate()));
 		retVal.setExpenseType(data.getExpenseType());
 		retVal.setNote(data.getNote());
 		retVal.setExpenseTypeLabel(enumSvc.resolve(data.getExpenseType(), EnumNames.EXPENSES));
@@ -159,5 +159,9 @@ public class ExpenseSvc {
 	
 	private static LocalDate toLocalDate(Date date) {
 		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	
+	private static Date toUtilDate(LocalDate date) {
+		return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 }

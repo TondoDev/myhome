@@ -1,11 +1,8 @@
 package org.tondo.myhome.thyme.pagemodel;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -112,9 +109,9 @@ public class ExpensePageModel {
 	private ExpenseInDayDO getDefaultFormContent() {
 		ExpenseInDayDO formDefault = new ExpenseInDayDO();
 		LocalDate now = LocalDate.now();
-		Instant instant = now.atStartOfDay(ZoneId.systemDefault()).toInstant();
-		formDefault.setDate(Date.from(instant));
+		formDefault.setDate(now);
 		formDefault.setDay(now.getDayOfMonth());
+		// TODO configurable
 		formDefault.setAmount(BigDecimal.valueOf(20));
 		return formDefault;
 	}
