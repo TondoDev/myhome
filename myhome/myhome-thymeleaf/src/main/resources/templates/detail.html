@@ -6,9 +6,14 @@
 	</head>
 	<body>
 		<h2 th:text="#{page.caption}"></h2>
-		
+
+		<!--
+		for YearMonth #temporals can't be used
+		${#temporals.format(prevMonth, 'MMMM YYYY')} 
+		 -->
+		<a th:if="${prevMonth != null}" th:text="Previous" th:href="@{/expense/year/{yr}/month/{mt}(yr=${prevMonth.year},mt=${prevMonth.monthValue})}"></a>
+		<a th:if="${nextMonth != null}" th:text="Next" th:href="@{/expense/year/{yr}/month/{mt}(yr=${nextMonth.year},mt=${nextMonth.monthValue})}"></a>			
 		<form th:if="${inputEnabled}" action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
-		
 		<p>
 			Date
 			<select th:field="*{day}">

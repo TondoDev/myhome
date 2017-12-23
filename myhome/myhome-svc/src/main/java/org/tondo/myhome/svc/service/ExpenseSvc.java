@@ -2,6 +2,7 @@ package org.tondo.myhome.svc.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,6 +81,16 @@ public class ExpenseSvc {
 		retVal.add(totalSum);
 		
 		return retVal;
+	}
+	
+	public YearMonth findPreviousMonth(int month, int year) {
+		Date prev = expenseRepo.findPreviousMonth(month, year);
+		return prev == null ? null : YearMonth.from(toLocalDate(prev));
+	}
+	
+	public YearMonth findNextMonth(int month, int year) {
+		Date next = expenseRepo.findNextMonth(month, year);
+		return next == null ? null : YearMonth.from(toLocalDate(next));
 	}
 	
 	public void save(ExpenseDO expenseDo) {

@@ -25,6 +25,8 @@ public class ExpensePageModel {
 	private Supplier<List<ExpenseDO>> dataSupplier;
 	private Supplier<List<ExpenseSummaryDO>> summarySupplier;;
 	private String target;
+	private YearMonth nextMonth;
+	private YearMonth previousMonth;
 	
 	
 	public ExpensePageModel(Model model, int month, int year) {
@@ -60,6 +62,16 @@ public class ExpensePageModel {
 		return this;
 	}
 	
+	public ExpensePageModel nextMonth(YearMonth next) {
+		this.nextMonth = next;
+		return this;
+	}
+	
+	public ExpensePageModel previousMonth(YearMonth prev) {
+		this.previousMonth = prev;
+		return this;
+	}
+	
 	public Model apply() {
 		validate();
 		
@@ -75,7 +87,11 @@ public class ExpensePageModel {
 				model.addAttribute("expenseForm", getDefaultFormContent());
 			}
 		}
-	
+		
+		// navigation
+		model.addAttribute("prevMonth", this.previousMonth);
+		model.addAttribute("nextMonth", this.nextMonth);
+		
 		// populate list
 		model.addAttribute("expenses", this.dataSupplier.get());
 		model.addAttribute("summary", this.summarySupplier.get());
@@ -87,7 +103,7 @@ public class ExpensePageModel {
 	}
 	
 	protected void validate() {
-		
+		// TODO
 	}
 	
 	private List<DropdownValue<Integer>> createDaysCombo() {

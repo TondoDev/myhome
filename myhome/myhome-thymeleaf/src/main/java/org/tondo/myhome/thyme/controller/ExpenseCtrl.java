@@ -45,6 +45,8 @@ public class ExpenseCtrl {
 			.dataSupplier(() -> expenseService.getExpenses(now.getMonthValue(), now.getYear()))
 			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
 			.summarySupplier(() -> this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()) )
+			.nextMonth(expenseService.findNextMonth(now.getMonthValue(), now.getYear()))
+			.previousMonth(expenseService.findPreviousMonth(now.getMonthValue(), now.getYear()))
 			.target("/expense/current")
 		.apply();
 		return "detail";
@@ -58,9 +60,23 @@ public class ExpenseCtrl {
 			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
 			.summarySupplier(() -> this.expenseService.getSummaryByMonth(examinedMonth.getMonthValue(), examinedMonth.getYear()))
 			.inputEnabled(isCurrentMont(month, year))
+			.nextMonth(expenseService.findNextMonth(month, year))
+			.previousMonth(expenseService.findPreviousMonth(month, year))
 			.target("/expense/year/" + year+ "/month/" + month)
 		.apply();
 		return "detail";
+	}
+	
+	@RequestMapping(value = "/prev/year/{year}/month/{month}", method = RequestMethod.GET)
+	public String findPreviousMonth(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
+		System.out.println("=== " + expenseService.findPreviousMonth(year, month));
+		return "redirect:/expense/year/" + year+ "/month/" + month;
+	}
+	
+	@RequestMapping(value = "/next/year/{year}/month/{month}", method = RequestMethod.GET)
+	public String findNextMonth(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
+		
+		return "";
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)

@@ -1,5 +1,7 @@
 package org.tondo.myhome.data.repo;
 
+import java.util.Date;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.tondo.myhome.data.domain.Expense;
@@ -21,4 +23,10 @@ public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 			"from #{#entityName} e where MONTH(e.date) = ?1 and YEAR(e.date) = ?2  " + 
 			"group by e.expenseType")
 	Iterable<ExpenseSummary> summaryByMonth(int month, int year);
+	
+	@Query("select MAX(e.date) from #{#entityName} e where (YEAR(e.date) < ?2) or (YEAR(e.date) = ?2 and MONTH(e.date) < ?1 )")
+	Date findPreviousMonth(int month, int year);
+	
+	@Query("select MIN(e.date) from #{#entityName} e where (YEAR(e.date) > ?2) or (YEAR(e.date) = ?2 and MONTH(e.date) > ?1 )")
+	Date findNextMonth(int month, int year);
 }
