@@ -67,17 +67,6 @@ public class ExpenseCtrl {
 		return "detail";
 	}
 	
-	@RequestMapping(value = "/prev/year/{year}/month/{month}", method = RequestMethod.GET)
-	public String findPreviousMonth(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
-		System.out.println("=== " + expenseService.findPreviousMonth(year, month));
-		return "redirect:/expense/year/" + year+ "/month/" + month;
-	}
-	
-	@RequestMapping(value = "/next/year/{year}/month/{month}", method = RequestMethod.GET)
-	public String findNextMonth(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
-		
-		return "";
-	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String findAll(Model model) {

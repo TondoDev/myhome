@@ -5,14 +5,23 @@
 		<title th:text="#{page.title}">Expenses</title>
 	</head>
 	<body>
-		<h2 th:text="#{page.caption}"></h2>
+		<!-- Enclosing with '|' we can concatenate more expression -->
+		<h2 th:text="|#{page.caption} ${#temporals.format(displayDate,'LLLL YYYY')}|"></h2>
 
 		<!--
 		for YearMonth #temporals can't be used
 		${#temporals.format(prevMonth, 'MMMM YYYY')} 
 		 -->
-		<a th:if="${prevMonth != null}" th:text="Previous" th:href="@{/expense/year/{yr}/month/{mt}(yr=${prevMonth.year},mt=${prevMonth.monthValue})}"></a>
-		<a th:if="${nextMonth != null}" th:text="Next" th:href="@{/expense/year/{yr}/month/{mt}(yr=${nextMonth.year},mt=${nextMonth.monthValue})}"></a>			
+		<a th:if="${prevMonth != null}" 
+			th:text="'Previous: ' + ${#temporals.format(prevMonth,'LLLL YYYY')}" 
+			th:href="@{/expense/year/{yr}/month/{mt}(yr=${prevMonth.year},mt=${prevMonth.monthValue})}">
+		Previous</a>
+		<br />
+		<a th:if="${nextMonth != null}" 
+			th:text="'Next: ' + ${#temporals.format(nextMonth,'LLLL YYYY')}" 
+			th:href="@{/expense/year/{yr}/month/{mt}(yr=${nextMonth.year},mt=${nextMonth.monthValue})}">
+		Next</a>
+					
 		<form th:if="${inputEnabled}" action="#" th:action="@{/expense/}" method="post" th:object="${expenseForm}">
 		<p>
 			Date
