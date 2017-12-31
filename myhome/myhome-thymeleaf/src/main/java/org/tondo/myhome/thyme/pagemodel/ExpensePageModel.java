@@ -73,7 +73,7 @@ public class ExpensePageModel {
 	}
 	
 	public Model apply() {
-		validate();
+ 		validate();
 		
 		if (this.inputEnabled) {
 			model.addAttribute("cbDays", createDaysCombo());
@@ -91,8 +91,10 @@ public class ExpensePageModel {
 		model.addAttribute("displayDate", LocalDate.of(this.year, this.month, 1/* day doesn't matter*/));
 		
 		// navigation
-		model.addAttribute("prevMonth", LocalDate.of(this.previousMonth.getYear(), this.previousMonth.getMonth(), 1));
-		model.addAttribute("nextMonth", LocalDate.of(this.nextMonth.getYear(), this.nextMonth.getMonth(), 1));
+		model.addAttribute("prevMonth", this.previousMonth == null ? null
+				: LocalDate.of(this.previousMonth.getYear(), this.previousMonth.getMonth(), 1));
+		model.addAttribute("nextMonth", this.nextMonth == null ? null 
+				: LocalDate.of(this.nextMonth.getYear(), this.nextMonth.getMonth(), 1));
 		
 		// populate list
 		model.addAttribute("expenses", this.dataSupplier.get());
