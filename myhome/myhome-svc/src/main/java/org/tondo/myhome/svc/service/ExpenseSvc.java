@@ -136,8 +136,15 @@ public class ExpenseSvc {
 			monthEntries.add(summary);
 		}
 		
-		// for last month, which is not added in loop
-		retVal.add(constructSummaryForAllCategories(iterableToDataObjectList(monthEntries, this::mapperExpenseSummary)));
+		// fill year with all months, even if month doesn't have any entry
+		// first iteration will add month entries populated in last iteration of 
+		// previous loop
+		while (monthCounter <= 12) {
+			retVal.add(constructSummaryForAllCategories(iterableToDataObjectList(monthEntries, this::mapperExpenseSummary)));
+			monthEntries = new ArrayList<>();
+			monthCounter++;
+		}
+			
 		return retVal;
 	}
 	

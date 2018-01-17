@@ -21,13 +21,15 @@
 		</div>
 		
 		<div th:if="${monthSummary != null}">
-			<table>
+			<table border="1">
 				<tr>
 					<th>Month</th>
-					<th th:each="sum,iter : ${monthSummary.get(0)}" th:text="${sum.expenseTypeLabel}" />
+					<th th:each="sum : ${monthSummary.get(0)}" th:text="${sum.expenseTypeLabel}" />
 				</tr>
 				<tr th:each="sum,iter : ${monthSummary}">
-					<td><a th:text="#{${'MONTH.NAME.' + (iter.index + 1)}}" th:href="@{'/expense/year/{year}/month/{month}'(month=${iter.index + 1},year=${year})}">1</a></td>
+					<td>
+						<a th:text="#{${'MONTH.NAME.' + (iter.index + 1)}}" th:href="@{'/expense/year/{year}/month/{month}'(month=${iter.index + 1},year=${year})}">1</a>
+					</td>
 					<td th:each="xx : ${sum}" th:text="${xx.sum}" /> 
 				</tr>
 			</table>
