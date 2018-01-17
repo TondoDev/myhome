@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title th:text="'x'">Year summary</title>
+	</head>
+	
+	<body>
+		<h2 th:text="'y'">A</h2>
+		
+		<div th:if="${yearSummary != null}">
+			<table>
+				<tr>
+					<th th:each="sum : ${yearSummary}" th:text="${sum.expenseTypeLabel}" />
+				</tr>
+				<tr>
+					<td th:each="sum : ${yearSummary}" th:text="${sum.sum}" />
+				</tr>
+			</table>
+			<br />
+		</div>
+		
+		<div th:if="${monthSummary != null}">
+			<table>
+				<tr>
+					<th>Month</th>
+					<th th:each="sum,iter : ${monthSummary.get(0)}" th:text="${sum.expenseTypeLabel}" />
+				</tr>
+				<tr th:each="sum,iter : ${monthSummary}">
+					<td><a th:text="#{${'MONTH.NAME.' + (iter.index + 1)}}" th:href="@{'/expense/year/{year}/month/{month}'(month=${iter.index + 1},year=${year})}">1</a></td>
+					<td th:each="xx : ${sum}" th:text="${xx.sum}" /> 
+				</tr>
+			</table>
+			<br />
+		</div>
+	</body>
+</html>

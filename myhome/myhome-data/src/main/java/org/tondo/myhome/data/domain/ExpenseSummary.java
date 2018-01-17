@@ -6,4 +6,5 @@ public interface ExpenseSummary {
 
 	public String getExpenseType();
 	public BigDecimal getSum();
+	public Integer getMonth();
 }

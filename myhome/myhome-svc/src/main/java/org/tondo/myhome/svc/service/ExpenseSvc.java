@@ -6,7 +6,9 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -18,6 +20,7 @@ import org.tondo.myhome.data.domain.ExpenseSummary;
 import org.tondo.myhome.data.repo.ExpenseRepository;
 import org.tondo.myhome.dto.ExpenseDO;
 import org.tondo.myhome.dto.ExpenseSummaryDO;
+import org.tondo.myhome.dto.ExpenseYearSummaryDO;
 import org.tondo.myhome.svc.enumsvc.EnumNames;
 import org.tondo.myhome.svc.enumsvc.EnumSvc;
 import org.tondo.myhome.svc.enumsvc.EnumValue;
@@ -50,6 +53,36 @@ public class ExpenseSvc {
 		return constructSummaryForAllCategories(categoriesWithValue);
 	}
 	
+	public ExpenseYearSummaryDO getSummaryByYear(int year) {
+		ExpenseYearSummaryDO retVal = new ExpenseYearSummaryDO();
+		List<List<ExpenseSummaryDO>> data = splitByMonth(expenseRepo.summaryByYear(year));
+		retVal.setMonthSummary(data);
+		
+		List<ExpenseSummaryDO> yearSummary = null;
+		for (List<ExpenseSummaryDO> monthSummary : data) {
+			if (yearSummary == null) {
+				yearSummary = new ArrayList<>();
+				for (ExpenseSummaryDO e : monthSummary) {
+					ExpenseSummaryDO tmp = new ExpenseSummaryDO();
+					tmp.setExpenseType(e.getExpenseType());
+					tmp.setExpenseTypeLabel(e.getExpenseTypeLabel());
+					tmp.setSum(e.getSum());
+					yearSummary.add(tmp);
+				}
+			} else {
+				int size = monthSummary.size();
+				for (int i = 0; i < size; i++) {
+					ExpenseSummaryDO yearTmp = yearSummary.get(i);
+					ExpenseSummaryDO monthTmp = monthSummary.get(i);
+					yearTmp.setSum(yearTmp.getSum().add(monthTmp.getSum()));
+				}
+			}
+		}
+		
+		retVal.setYearSummary(yearSummary);
+		return retVal;
+	}
+	
 	private List<ExpenseSummaryDO> constructSummaryForAllCategories(List<ExpenseSummaryDO> categoryWithValue) {
 		List<ExpenseSummaryDO> retVal = new ArrayList<>();
 		List<EnumValue> categories = this.enumSvc.getEnumValues(EnumNames.EXPENSES);
@@ -80,6 +113,31 @@ public class ExpenseSvc {
 		totalSum.setSum(total);
 		retVal.add(totalSum);
 		
+		return retVal;
+	}
+	
+	
+	private List<List<ExpenseSummaryDO>> splitByMonth(Iterable<ExpenseSummary> allEntries) {
+		List<List<ExpenseSummaryDO>> retVal = new ArrayList<>();
+		
+		int monthCounter = 1;
+		List<ExpenseSummary> monthEntries = new ArrayList<>();
+		
+		for (ExpenseSummary summary : allEntries) {
+			if (summary.getMonth() < monthCounter) {
+				throw new IllegalStateException("Expense summary is not ordered by month");
+			}
+			while(summary.getMonth() > monthCounter) {
+				retVal.add(constructSummaryForAllCategories(iterableToDataObjectList(monthEntries, this::mapperExpenseSummary)));
+				monthCounter++;
+				monthEntries = new ArrayList<ExpenseSummary>();
+			}
+			
+			monthEntries.add(summary);
+		}
+		
+		// for last month, which is not added in loop
+		retVal.add(constructSummaryForAllCategories(iterableToDataObjectList(monthEntries, this::mapperExpenseSummary)));
 		return retVal;
 	}
 	

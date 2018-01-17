@@ -24,6 +24,12 @@ public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 			"group by e.expenseType")
 	Iterable<ExpenseSummary> summaryByMonth(int month, int year);
 	
+	@Query("select MONTH(e.date) as month, e.expenseType as expenseType, sum(e.amount) as sum " +
+			"from #{#entityName} e where YEAR(e.date) = ?1 " +
+			"group by MONTH(e.date), e.expenseType " +
+			"order by MONTH(e.date) ASC")
+	Iterable<ExpenseSummary> summaryByYear(int year);
+	
 	@Query("select MAX(e.date) from #{#entityName} e where (YEAR(e.date) < ?2) or (YEAR(e.date) = ?2 and MONTH(e.date) < ?1 )")
 	Date findPreviousMonth(int month, int year);
 	

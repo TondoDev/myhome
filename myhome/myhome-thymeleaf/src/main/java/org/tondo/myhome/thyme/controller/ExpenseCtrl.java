@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.tondo.myhome.dto.ExpenseDO;
 import org.tondo.myhome.dto.ExpenseInDayDO;
+import org.tondo.myhome.dto.ExpenseYearSummaryDO;
 import org.tondo.myhome.svc.enumsvc.EnumNames;
 import org.tondo.myhome.svc.enumsvc.EnumSvc;
 import org.tondo.myhome.svc.service.ExpenseSvc;
@@ -116,6 +117,15 @@ public class ExpenseCtrl {
 	public String deleteExpenseAdmin(@PathVariable Long expenseId) {
 		this.expenseService.delete(expenseId);
 		return "redirect:/expense/";
+	}
+	
+	@RequestMapping(value="/year/{year}", method = RequestMethod.GET)
+	public String yearSummary(Model model, @PathVariable int year) {
+		ExpenseYearSummaryDO summary = this.expenseService.getSummaryByYear(year);
+		model.addAttribute("yearSummary", summary.getYearSummary());
+		model.addAttribute("monthSummary", summary.getMonthSummary());
+		model.addAttribute("year", year);
+		return "yearSummary";
 	}
 	
 	// is calling 
