@@ -27,9 +27,10 @@
 					<th th:each="sum : ${monthSummary.get(0)}" th:text="${sum.expenseTypeLabel}" />
 				</tr>
 				<tr th:each="sum,iter : ${monthSummary}">
-					<td>
+					<td th:if="${clickFlags[iter.index]}">
 						<a th:text="#{${'MONTH.NAME.' + (iter.index + 1)}}" th:href="@{'/expense/year/{year}/month/{month}'(month=${iter.index + 1},year=${year})}">1</a>
 					</td>
+					<td th:unless="${clickFlags[iter.index]}" th:text="#{${'MONTH.NAME.' + (iter.index + 1)}}" />
 					<td th:each="xx : ${sum}" th:text="${xx.sum}" /> 
 				</tr>
 			</table>

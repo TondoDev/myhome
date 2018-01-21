@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.tondo.myhome.dto.ExpenseDO;
 import org.tondo.myhome.dto.ExpenseInDayDO;
-import org.tondo.myhome.dto.ExpenseYearSummaryDO;
 import org.tondo.myhome.svc.enumsvc.EnumNames;
 import org.tondo.myhome.svc.enumsvc.EnumSvc;
 import org.tondo.myhome.svc.service.ExpenseSvc;
 import org.tondo.myhome.thyme.pagemodel.ExpensePageModeDefault;
 import org.tondo.myhome.thyme.pagemodel.ExpensePageModel;
+import org.tondo.myhome.thyme.pagemodel.YearSummaryPageModel;
 
 @Controller
 @RequestMapping("/expense")
@@ -121,10 +121,9 @@ public class ExpenseCtrl {
 	
 	@RequestMapping(value="/year/{year}", method = RequestMethod.GET)
 	public String yearSummary(Model model, @PathVariable int year) {
-		ExpenseYearSummaryDO summary = this.expenseService.getSummaryByYear(year);
-		model.addAttribute("yearSummary", summary.getYearSummary());
-		model.addAttribute("monthSummary", summary.getMonthSummary());
-		model.addAttribute("year", year);
+		new YearSummaryPageModel(year)
+			.data(this.expenseService.getSummaryByYear(year))
+		.apply(model);
 		return "yearSummary";
 	}
 	
