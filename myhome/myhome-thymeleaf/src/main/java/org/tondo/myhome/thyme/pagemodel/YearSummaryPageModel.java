@@ -10,6 +10,8 @@ import org.tondo.myhome.dto.ExpenseYearSummaryDO;
 public class YearSummaryPageModel {
 
 	private int year;
+	private Integer previousYear;
+	private Integer nextYear;
 	private ExpenseYearSummaryDO data;
 	
 	public YearSummaryPageModel(int year) {
@@ -21,7 +23,19 @@ public class YearSummaryPageModel {
 		return this;
 	}
 	
+	public YearSummaryPageModel previousYear(Integer py) {
+		this.previousYear = py;
+		return this;
+	}
+	
+	public YearSummaryPageModel nextYear(Integer ny) {
+		this.nextYear = ny;
+		return this;
+	}
+	
 	public void apply(Model model) {
+		model.addAttribute("previousYear", this.previousYear);
+		model.addAttribute("nextYear", this.nextYear);
 		model.addAttribute("yearSummary", this.data.getYearSummary());
 		model.addAttribute("monthSummary", this.data.getMonthSummary());
 		model.addAttribute("clickFlags", calculateClickableFlags(this.data.getMonthSummary()));

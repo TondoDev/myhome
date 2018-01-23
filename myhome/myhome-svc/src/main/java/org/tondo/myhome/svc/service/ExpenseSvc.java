@@ -156,6 +156,14 @@ public class ExpenseSvc {
 		return next == null ? null : YearMonth.from(toLocalDate(next));
 	}
 	
+	public Integer findPreviousYear(int year) {
+		return this.expenseRepo.findPreviousYear(year);
+	}
+	
+	public Integer findNextYear(int year) {
+		return this.expenseRepo.findNextYear(year);
+	}
+	
 	public void save(ExpenseDO expenseDo) {
 		Expense expense = this.fromDataObject(expenseDo);
 		expenseRepo.save(expense);

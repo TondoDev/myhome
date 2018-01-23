@@ -35,4 +35,10 @@ public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 	
 	@Query("select MIN(e.date) from #{#entityName} e where (YEAR(e.date) > ?2) or (YEAR(e.date) = ?2 and MONTH(e.date) > ?1 )")
 	Date findNextMonth(int month, int year);
+	
+	@Query("select MAX(YEAR(e.date)) from #{#entityName} e where YEAR(e.date) < ?1")
+	Integer findPreviousYear(int currentYear);
+	
+	@Query("select MIN(YEAR(e.date)) from #{#entityName} e where YEAR(e.date) > ?1")
+	Integer findNextYear(int currentYear);
 }

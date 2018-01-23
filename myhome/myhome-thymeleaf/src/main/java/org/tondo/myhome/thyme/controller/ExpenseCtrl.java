@@ -118,6 +118,8 @@ public class ExpenseCtrl {
 	public String yearSummary(Model model, @PathVariable int year) {
 		new YearSummaryPageModel(year)
 			.data(this.expenseService.getSummaryByYear(year))
+			.previousYear(this.expenseService.findPreviousYear(year))
+			.nextYear(this.expenseService.findNextYear(year))
 		.apply(model);
 		return "yearSummary";
 	}

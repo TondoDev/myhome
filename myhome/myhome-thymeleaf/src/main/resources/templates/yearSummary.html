@@ -6,9 +6,28 @@
 	</head>
 	
 	<body>
-		<h2 th:text="'y'">A</h2>
-		
-		<div th:if="${yearSummary != null}">
+		<h2 th:text="'Year summary for ' + ${year}">A</h2>
+
+	<table>
+		<tr>
+			<td th:if="${previousYear != null}">
+				<a  th:href="@{/expense/year/{yr}(yr=${previousYear})}"
+					th:text="'Previous ' + ${previousYear}">Previous</a>
+			</td>
+			<td th:unless="${previousYear != null}">&nbsp;</td>
+		</tr>
+		<tr>
+			<td th:if="${nextYear != null}">
+			<a th:href="@{/expense/year/{yr}(yr=${nextYear})}"
+				th:text="'Next ' + ${nextYear}">Next</a>
+			</td>
+			<td th:unless="${nextYear != null}">&nbsp;</td>
+		</tr>
+	</table>
+
+
+
+	<div th:if="${yearSummary != null}">
 			<table>
 				<tr>
 					<th th:each="sum : ${yearSummary}" th:text="${sum.expenseTypeLabel}" />
