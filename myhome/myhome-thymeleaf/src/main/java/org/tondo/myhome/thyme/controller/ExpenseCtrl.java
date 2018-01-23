@@ -1,19 +1,14 @@
 package org.tondo.myhome.thyme.controller;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Date;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -125,14 +120,6 @@ public class ExpenseCtrl {
 			.data(this.expenseService.getSummaryByYear(year))
 		.apply(model);
 		return "yearSummary";
-	}
-	
-	// is calling 
-	@InitBinder
-	public void paramBinding(WebDataBinder binder) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-		dateFormat.setLenient(false);
-		binder.registerCustomEditor(Date.class, "date", new CustomDateEditor(dateFormat, true));
 	}
 	
 	private static boolean isCurrentMont(int month, int year) {
