@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.springframework.ui.Model;
 import org.tondo.myhome.dto.ExpenseDO;
 import org.tondo.myhome.dto.ExpenseSummaryDO;
+import org.tondo.myhome.svc.data.PageResult;
 import org.tondo.myhome.svc.enumsvc.EnumValue;
 import org.tondo.myhome.thyme.presentation.dropdown.DropdownListCreator;
 import org.tondo.myhome.thyme.presentation.dropdown.DropdownValue;
@@ -15,14 +16,14 @@ import org.tondo.myhome.thyme.presentation.dropdown.DropdownValue;
 public class ExpensePageModeDefault {
 	private Model model;
 	private Supplier<List<EnumValue>> cbTypesSupplier;
-	private Supplier<List<ExpenseDO>> dataSupplier;
+	private Supplier<PageResult<ExpenseDO>> dataSupplier;
 	private Supplier<List<ExpenseSummaryDO>> summarySupplier;;
 
 	public ExpensePageModeDefault(Model model) {
 		this.model = model;
 	}
 	
-	public ExpensePageModeDefault dataSupplier(Supplier<List<ExpenseDO>> data) {
+	public ExpensePageModeDefault dataSupplier(Supplier<PageResult<ExpenseDO>> data) {
 		this.dataSupplier = data;
 		return this;
 	}
@@ -55,7 +56,8 @@ public class ExpensePageModeDefault {
 		model.addAttribute("deleteEnabled", true);
 		
 		// populate list
-		model.addAttribute("expenses", this.dataSupplier.get());
+		PageResult<ExpenseDO> pageRrsult = this.dataSupplier.get();
+		model.addAttribute("expenses", pageRrsult.getData());
 		model.addAttribute("summary", this.summarySupplier.get());
 		
 		return this.model;

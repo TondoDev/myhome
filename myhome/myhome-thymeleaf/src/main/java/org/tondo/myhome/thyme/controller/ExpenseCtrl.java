@@ -65,11 +65,13 @@ public class ExpenseCtrl {
 	
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String findAll(Model model) {
+	public String findAll(Model model, 
+			@RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, 
+			@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber) {
 		
 		new ExpensePageModeDefault(model)
 			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
-			.dataSupplier(() -> expenseService.getExpenses())
+			.dataSupplier(() -> expenseService.getExpenses(pageSize, pageNumber))
 			.summarySupplier(() -> this.expenseService.getTotalSummary())
 		.apply();
 

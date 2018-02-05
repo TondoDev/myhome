@@ -2,17 +2,21 @@ package org.tondo.myhome.data.repo;
 
 import java.util.Date;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.tondo.myhome.data.domain.Expense;
 import org.tondo.myhome.data.domain.ExpenseSummary;
 
 
-public interface ExpenseRepository extends CrudRepository<Expense, Long> {
+public interface ExpenseRepository extends PagingAndSortingRepository<Expense, Long> {
 	@Query("select e from #{#entityName} e where MONTH(e.date) = ?1 and YEAR(e.date) = ?2 order by e.date desc, e.id desc")
 	Iterable<Expense> findForMonthOrderByDateDesc(int month, int year);
 	
 	Iterable<Expense> findAllByOrderByDateDescIdDesc();
+	
+	Page<Expense> findAll(Pageable paging);
 	
 	// Projection
 	// all projected fields must have alias(even if they have same name in target object)

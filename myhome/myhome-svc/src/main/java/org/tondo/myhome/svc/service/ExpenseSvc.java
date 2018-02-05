@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.tondo.myhome.data.domain.Expense;
 import org.tondo.myhome.data.domain.ExpenseSummary;
@@ -19,6 +23,8 @@ import org.tondo.myhome.data.repo.ExpenseRepository;
 import org.tondo.myhome.dto.ExpenseDO;
 import org.tondo.myhome.dto.ExpenseSummaryDO;
 import org.tondo.myhome.dto.ExpenseYearSummaryDO;
+import org.tondo.myhome.svc.data.PageResult;
+import org.tondo.myhome.svc.data.PageResultSpringDataImpl;
 import org.tondo.myhome.svc.enumsvc.EnumNames;
 import org.tondo.myhome.svc.enumsvc.EnumSvc;
 import org.tondo.myhome.svc.enumsvc.EnumValue;
@@ -32,13 +38,44 @@ public class ExpenseSvc {
 	@Autowired
 	private EnumSvc enumSvc;
 	
+	// TODO: configurable from property file 
+	private static final int MAX_PAGE_SIZE = 500;
+	
 	
 	public List<ExpenseDO> getExpenses(int month, int year) {
 		return iterableToDataObjectList(expenseRepo.findForMonthOrderByDateDesc(month, year), this::toDataObject);
 	}
 	
-	public List<ExpenseDO> getExpenses() {
-		return iterableToDataObjectList(expenseRepo.findAllByOrderByDateDescIdDesc(), this::toDataObject);
+	/***
+	 * 
+	 * @param pageSize maximum number of records returned by request, caped by 500
+	 * @param pageNumber page number, starting at 1
+	 * @return
+	 */
+	public PageResult<ExpenseDO> getExpenses(Integer pageSize, Integer pageNumber) {
+		
+		if (pageNumber == null || pageNumber < 1) {
+			pageNumber = 1;
+		}
+		
+		if (pageSize == null || pageSize <= 0 ) {
+			pageSize = 10;
+		} else if (pageSize > MAX_PAGE_SIZE) {
+			pageSize = MAX_PAGE_SIZE;
+		}
+		
+		Page<Expense> result =  expenseRepo.findAll(new PageRequest(pageNumber - 1, pageSize, new Sort(Direction.DESC, "date", "id")));
+		System.out.println(result.getNumberOfElements());
+		System.out.println(result.getNumber());
+		System.out.println(result.getSize());
+		System.out.println(result.getTotalPages());
+		return new PageResultSpringDataImpl<>(result.map(this::toDataObject));
+//		
+//		System.out.println(result.getNumberOfElements());
+//		System.out.println(result.getNumber());
+//		System.out.println(result.getSize());
+//		System.out.println(result.getTotalPages());
+//		return iterableToDataObjectList(result.getContent(), this::toDataObject);
 	}
 	
 	public List<ExpenseSummaryDO> getTotalSummary() {
