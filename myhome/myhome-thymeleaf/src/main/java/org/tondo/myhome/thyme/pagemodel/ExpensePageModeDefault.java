@@ -57,6 +57,8 @@ public class ExpensePageModeDefault {
 		
 		// populate list
 		PageResult<ExpenseDO> pageRrsult = this.dataSupplier.get();
+		PageSelect pagingButtons = new PageSelect(pageRrsult, 5);
+		model.addAttribute("paging", pagingButtons);
 		model.addAttribute("expenses", pageRrsult.getData());
 		model.addAttribute("summary", this.summarySupplier.get());
 		
