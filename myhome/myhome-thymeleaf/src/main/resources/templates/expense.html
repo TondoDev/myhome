@@ -65,27 +65,7 @@
 			</tr>
 		</table>
 		
-		<table border="1">
-			<tr>
-				<td width="40px">
-					<div th:if="${paging.currentPage != 1}">
-						<a th:href="@{/expense/(pageNumber=1,pageSize=${paging.pageSize})}">&lt;&lt;</a>
-						<a th:href="@{/expense/(pageNumber=${paging.currentPage - 1},pageSize=${paging.pageSize})}">&lt;</a>
-					</div>
-				</td>
-				
-				<td th:each="cnt : ${#numbers.sequence(paging.firstShown, paging.lastShown)}" width="40px">
-					<span th:if="${cnt == paging.currentPage}" th:text="${cnt}">1</span>
-					<a th:unless="${cnt == paging.currentPage}" th:text="${cnt}" th:href="@{/expense/(pageNumber=${cnt},pageSize=${paging.pageSize})}">1</a>
-				</td>
-				
-				<td width="40px">	
-					<div th:if="${paging.currentPage != paging.pageCount}">
-						<a th:href="@{/expense/(pageNumber=${paging.currentPage + 1},pageSize=${paging.pageSize})}">&gt;</a>
-						<a th:href="@{/expense/(pageNumber=${paging.pageCount},pageSize=${paging.pageSize})}">&gt;&gt;</a>
-					</div>
-				</td>
-			</tr>
-		</table>
+		<div th:replace="fragments/paging :: pageSwitcher ('/expense/')">
+		</div>
 	</body>
 </html>
