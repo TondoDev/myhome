@@ -8,20 +8,22 @@
 	<body>
 		<h2 th:text="'Year summary for ' + ${year}">A</h2>
 
-	<table>
+	<table style="width:600px" border="1">
 		<tr>
-			<td th:if="${previousYear != null}">
-				<a  th:href="@{/expense/year/{yr}(yr=${previousYear})}"
-					th:text="'Previous ' + ${previousYear}">Previous</a>
+			<td width="30%">
+				<a  th:if="${previousYear != null}" th:href="@{/expense/year/{yr}(yr=${previousYear})}"
+					th:text="'Previous ' + ${previousYear}">Previous</a>&nbsp;
 			</td>
-			<td th:unless="${previousYear != null}">&nbsp;</td>
-		</tr>
-		<tr>
-			<td th:if="${nextYear != null}">
-			<a th:href="@{/expense/year/{yr}(yr=${nextYear})}"
-				th:text="'Next ' + ${nextYear}">Next</a>
+			<td>
+				<a th:href="@{/expense/current}">Current Month</a>
 			</td>
-			<td th:unless="${nextYear != null}">&nbsp;</td>
+			<td>
+				Current year
+			</td>
+			<td width="30%">
+				<a th:if="${nextYear != null}"  th:href="@{/expense/year/{yr}(yr=${nextYear})}"
+					th:text="'Next ' + ${nextYear}">Next</a>&nbsp;
+			</td>
 		</tr>
 	</table>
 

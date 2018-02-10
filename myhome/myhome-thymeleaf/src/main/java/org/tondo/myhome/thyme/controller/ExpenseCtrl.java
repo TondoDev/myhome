@@ -55,7 +55,7 @@ public class ExpenseCtrl {
 			.dataSupplier(() -> expenseService.getExpenses(examinedMonth.getMonthValue(), examinedMonth.getYear()))
 			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
 			.summarySupplier(() -> this.expenseService.getSummaryByMonth(examinedMonth.getMonthValue(), examinedMonth.getYear()))
-			.inputEnabled(isCurrentMont(month, year))
+			.inputEnabled(isCurrentMonth(month, year))
 			.nextMonth(expenseService.findNextMonth(month, year))
 			.previousMonth(expenseService.findPreviousMonth(month, year))
 			.target("/expense/year/" + year+ "/month/" + month)
@@ -126,7 +126,7 @@ public class ExpenseCtrl {
 		return "yearSummary";
 	}
 	
-	private static boolean isCurrentMont(int month, int year) {
+	private static boolean isCurrentMonth(int month, int year) {
 		YearMonth now = YearMonth.now();
 		return now.getMonthValue() == month && now.getYear() == year;
 	}
