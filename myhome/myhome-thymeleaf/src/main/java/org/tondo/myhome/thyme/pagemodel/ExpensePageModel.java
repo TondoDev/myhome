@@ -19,8 +19,8 @@ public class ExpensePageModel {
 
 	private Model model;
 	private boolean inputEnabled;
-	private int month;
-	private int year;
+	private LocalDate today;
+	private YearMonth examinedMonth;
 	private Supplier<List<EnumValue>> cbTypesSupplier;
 	private Supplier<List<ExpenseDO>> dataSupplier;
 	private Supplier<List<ExpenseSummaryDO>> summarySupplier;;
@@ -29,11 +29,11 @@ public class ExpensePageModel {
 	private YearMonth previousMonth;
 	
 	
-	public ExpensePageModel(Model model, int month, int year) {
+	public ExpensePageModel(Model model, YearMonth examinedDate, LocalDate today) {
 		this.model = model;
 		this.inputEnabled = true;
-		this.month = month;
-		this.year = year;
+		this.examinedMonth = examinedDate;
+		this.today = today;
 	}
 	
 	public ExpensePageModel dataSupplier(Supplier<List<ExpenseDO>> data) {
@@ -88,7 +88,7 @@ public class ExpensePageModel {
 			}
 		}
 		
-		model.addAttribute("displayDate", LocalDate.of(this.year, this.month, 1/* day doesn't matter*/));
+		model.addAttribute("displayDate", LocalDate.of(this.examinedMonth.getYear(), this.examinedMonth.getMonthValue(), 1/* day doesn't matter*/));
 		
 		// navigation
 		model.addAttribute("prevMonth", this.previousMonth == null ? null
@@ -101,6 +101,7 @@ public class ExpensePageModel {
 		model.addAttribute("summary", this.summarySupplier.get());
 		// properties
 		model.addAttribute("inputEnabled", this.inputEnabled);
+		model.addAttribute("isCurrent", YearMonth.from(this.today).equals(this.examinedMonth));
 		model.addAttribute("target", this.target);
 		model.addAttribute("deleteEnabled", this.inputEnabled);
 		return this.model;
@@ -111,14 +112,12 @@ public class ExpensePageModel {
 	}
 	
 	private List<DropdownValue<Integer>> createDaysCombo() {
-		LocalDate current = LocalDate.now();
-		YearMonth examinedMonth = YearMonth.of(this.year, this.month);
 		int minDay = 1;
 		int maxDay;
-		if(examinedMonth.isBefore(YearMonth.from(current))) {
-			maxDay = examinedMonth.lengthOfMonth();
+		if(this.examinedMonth.isBefore(YearMonth.from(this.today))) {
+			maxDay = this.examinedMonth.lengthOfMonth();
 		} else {
-			maxDay = current.getDayOfMonth();
+			maxDay = this.today.getDayOfMonth();
 		}
 		
 		DropdownListCreator<Integer> cbDays = new DropdownListCreator<>(DropdownListCreator.INTEGER_KEY);
@@ -128,9 +127,8 @@ public class ExpensePageModel {
 	
 	private ExpenseInDayDO getDefaultFormContent() {
 		ExpenseInDayDO formDefault = new ExpenseInDayDO();
-		LocalDate now = LocalDate.now();
-		formDefault.setDate(now);
-		formDefault.setDay(now.getDayOfMonth());
+		formDefault.setDate(this.today);
+		formDefault.setDay(this.today.getDayOfMonth());
 		// TODO configurable
 		formDefault.setAmount(BigDecimal.valueOf(20));
 		return formDefault;

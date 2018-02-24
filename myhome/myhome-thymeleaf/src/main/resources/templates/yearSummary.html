@@ -18,7 +18,8 @@
 				<a th:href="@{/expense/current}">Current Month</a>
 			</td>
 			<td>
-				Current year
+				<span th:if="${currentYear == null}">Current year</span>
+				<a th:unless="${currentYear == null}" th:href="@{/expense/year/{yr}(yr=${currentYear})}">Current year</a>
 			</td>
 			<td width="30%">
 				<a th:if="${nextYear != null}"  th:href="@{/expense/year/{yr}(yr=${nextYear})}"

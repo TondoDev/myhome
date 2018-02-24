@@ -37,7 +37,7 @@ public class ExpenseCtrl {
 	@RequestMapping(value = "/current", method = RequestMethod.GET)
 	public String findForCurrentMonth(Model model) {
 		YearMonth now = YearMonth.now();
-		new ExpensePageModel(model, now.getMonthValue(), now.getYear())
+		new ExpensePageModel(model, now, LocalDate.now())
 			.dataSupplier(() -> expenseService.getExpenses(now.getMonthValue(), now.getYear()))
 			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
 			.summarySupplier(() -> this.expenseService.getSummaryByMonth(now.getMonthValue(), now.getYear()) )
@@ -51,7 +51,7 @@ public class ExpenseCtrl {
 	@RequestMapping(value = "/year/{year}/month/{month}", method = RequestMethod.GET)
 	public String findByQuery(Model model, @PathVariable("month") int month, @PathVariable("year") int year) {
 		YearMonth examinedMonth = YearMonth.of(year, month);
-		new ExpensePageModel(model, examinedMonth.getMonthValue(), examinedMonth.getYear())
+		new ExpensePageModel(model, examinedMonth, LocalDate.now())
 			.dataSupplier(() -> expenseService.getExpenses(examinedMonth.getMonthValue(), examinedMonth.getYear()))
 			.typesSupplier(() -> enumService.getEnumValues(EnumNames.EXPENSES))
 			.summarySupplier(() -> this.expenseService.getSummaryByMonth(examinedMonth.getMonthValue(), examinedMonth.getYear()))
@@ -118,7 +118,7 @@ public class ExpenseCtrl {
 	
 	@RequestMapping(value="/year/{year}", method = RequestMethod.GET)
 	public String yearSummary(Model model, @PathVariable int year) {
-		new YearSummaryPageModel(year)
+		new YearSummaryPageModel(year, LocalDate.now())
 			.data(this.expenseService.getSummaryByYear(year))
 			.previousYear(this.expenseService.findPreviousYear(year))
 			.nextYear(this.expenseService.findNextYear(year))

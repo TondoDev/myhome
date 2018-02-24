@@ -1,6 +1,7 @@
 package org.tondo.myhome.thyme.pagemodel;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.ui.Model;
@@ -13,9 +14,11 @@ public class YearSummaryPageModel {
 	private Integer previousYear;
 	private Integer nextYear;
 	private ExpenseYearSummaryDO data;
+	private LocalDate today;
 	
-	public YearSummaryPageModel(int year) {
+	public YearSummaryPageModel(int year, LocalDate today) {
 		this.year = year;
+		this.today = today;
 	}
 	
 	public YearSummaryPageModel data(ExpenseYearSummaryDO summary) {
@@ -40,6 +43,8 @@ public class YearSummaryPageModel {
 		model.addAttribute("monthSummary", this.data.getMonthSummary());
 		model.addAttribute("clickFlags", calculateClickableFlags(this.data.getMonthSummary()));
 		model.addAttribute("year", this.year);
+		// if displayed year is not current year, then current year value is passed
+		model.addAttribute("currentYear", this.year == this.today.getYear() ? null : this.today.getYear());
 	}
 	
 	

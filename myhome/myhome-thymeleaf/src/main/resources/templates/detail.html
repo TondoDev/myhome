@@ -18,9 +18,8 @@
 					&nbsp;
 				</td>
 				<td>
-					<a th:href="@{/expense/current}">
-					Current
-					</a>
+					<span  th:if="${isCurrent}">Current</span>
+					<a  th:unless="${isCurrent}" th:href="@{/expense/current}">Current</a>
 				</td>
 				<td>
 					<a th:text="'Year ' + ${displayDate.year}"
