@@ -33,6 +33,7 @@ public class EnumSvc {
 		expenseValues.add(new EnumValue(6, 1, "HEAL",  "Zdravie"));
 		expenseValues.add(new EnumValue(7, 1, "OFFICE",  "Uradne"));
 		expenseValues.add(new EnumValue(8, 1, "CLOTH",  "Oblecenie"));
+		expenseValues.add(new EnumValue(9, 1, "EDU",  "Vzdelanie"));
 		this.enumValues.put(EXPENSES, expenseValues);
 	}
 	
