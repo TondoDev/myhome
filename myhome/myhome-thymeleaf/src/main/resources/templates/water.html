@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Water usage</title>
+	</head>	
+	<body>
+	
+	<form th:action="@{/water/}" method="post" th:object="${waterUsage}">
+		<table>
+			<tr>
+				<td><label for="meas">Merane</label></td>
+				<td><input id="meas" type="text" name="measured" /></td>
+				<td><p th:errors="*{measured}">Incorrect date</p></td>
+			</tr>
+			<tr>
+				<td><label for="wu">Tepla voda</label></td>
+				<td><input id="wu" type="text" name="warmUsage" /></td>
+			</tr>
+			<tr>
+				<td><label for="cu">Studena voda</label></td>
+				<td><input id="cu" type="text" name="coldUsage" /></td>
+			</tr>
+			<tr>
+				<td />
+				<td><input type="submit" value="Odoslať"/></td>
+			</tr>
+		</table>
+	</form>
+	
+	
+	<table border="1">
+		<tr>
+			<th>Merané</th>
+			<th>Stav teplá</th>
+			<th>Stav studená</th>
+			<th>Dní</th>
+			<th>Teplá za obdobie</th>
+			<th>Studená za obdobie</th>
+			<th>Teplá na deň</th>
+			<th>Studená za obdobie</th>
+		</tr>
+		<tr th:each="row : ${usages}">
+			<td th:text="${#temporals.format(row.measured, 'dd.MM.yyyy')}"></td>
+			<td th:text="${#numbers.formatDecimal(row.warmUsage, 1, 3)}"></td>
+			<td th:text="${#numbers.formatDecimal(row.coldUsage, 1, 3)}"></td>
+			<td th:text="${row.numberOfDays}"></td>
+			<td th:text="${#numbers.formatDecimal(row.diffWarm, 1, 3)}"></td>
+			<td th:text="${#numbers.formatDecimal(row.diffCold, 1, 3)}"></td>
+			<td th:text="${#numbers.formatDecimal(row.warmPerDay, 1, 4)}"></td>
+			<td th:text="${#numbers.formatDecimal(row.coldPerDay, 1, 4)}"></td>
+		</tr>
+	</table>
+
+	</body>
+</html>
