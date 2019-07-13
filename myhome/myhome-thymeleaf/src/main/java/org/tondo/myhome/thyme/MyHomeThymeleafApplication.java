@@ -13,7 +13,7 @@ public class MyHomeThymeleafApplication extends WebMvcConfigurerAdapter {
 	public void addFormatters(FormatterRegistry registry) {
 		super.addFormatters(registry);
 		
-		registry.addConverter(new LocalDateConverter("dd.MM.yyyy"));
+		registry.addConverter(new LocalDateConverter("d.M.yyyy"));
 	}
 
 	public static void main(String[] args) {

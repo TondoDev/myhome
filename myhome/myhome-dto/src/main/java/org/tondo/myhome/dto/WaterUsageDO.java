@@ -8,7 +8,7 @@ public class WaterUsageDO {
 
 	private Long id;
 	
-	@NotNull
+	@NotNull(message = "is.not.filled")
 	private LocalDate measured;
 	
 	@NotNull

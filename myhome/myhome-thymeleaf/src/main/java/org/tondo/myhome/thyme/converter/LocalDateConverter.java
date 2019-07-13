@@ -5,8 +5,14 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.core.convert.converter.Converter;
 
+/**
+ * For display in Thymeleaf templates
+ * @author TondoDev
+ *
+ */
 public class LocalDateConverter implements Converter<String, LocalDate> {
 	
+	// this should be thread safe
 	private DateTimeFormatter formatter;
 	
 	public LocalDateConverter(String pattern) {
@@ -18,6 +24,7 @@ public class LocalDateConverter implements Converter<String, LocalDate> {
 		if (source == null || source.isEmpty()) {
 			return null;
 		}
+		
 		
 		return LocalDate.parse(source, this.formatter);
 	}

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.tondo.myhome.data.domain.WaterUsage;
 import org.tondo.myhome.data.repo.WaterUsageRepository;
 import org.tondo.myhome.dto.WaterUsageDO;
+import org.tondo.myhome.svc.exception.FieldError;
+import org.tondo.myhome.svc.exception.WaterValidationException;
 
 @Service
 public class WaterSvc {
@@ -22,10 +24,20 @@ public class WaterSvc {
 	public List<WaterUsageDO> getWagerUsage() {
 		//return iterableToDataObjectList(waterUsageRepository.findAll(), WaterSvc::toDataObject);
 		
-		return calculateDifferences(waterUsageRepository.findAll());
+		return calculateDifferences(waterUsageRepository.findAllByOrderByMeasuredDesc());
 	}
 	
 	public void addMeasurement(WaterUsageDO usage) {
+		
+		WaterUsage latestWaterusage = waterUsageRepository.findTopByOrderByMeasuredDesc();
+		
+		if (latestWaterusage!= null) {
+			List<FieldError> error = validateMeasurmentContinuity(usage, toDataObject(latestWaterusage));
+			if (!error.isEmpty()) {
+				throw new WaterValidationException(error);
+			}
+		}
+		
 		WaterUsage waterUsageData = new WaterUsage();
 		waterUsageData.setColdUsage(usage.getColdUsage());
 		waterUsageData.setWarmUsage(usage.getWarmUsage());
@@ -34,28 +46,45 @@ public class WaterSvc {
 		waterUsageRepository.save(waterUsageData);
 	}
 	
+	private List<FieldError> validateMeasurmentContinuity(WaterUsageDO current, WaterUsageDO latest) {
+		List<FieldError> errors = new ArrayList<FieldError>();
+		if (current.getMeasured().isBefore(latest.getMeasured())) {
+			errors.add(new FieldError("measured", "water.measured.before"));
+		}
+		
+		if (current.getColdUsage() < latest.getColdUsage()) {
+			errors.add(new FieldError("coldUsage", "water.coldUsage.lower"));
+		}
+		
+		if (current.getWarmUsage() < latest.getWarmUsage()) {
+			errors.add(new FieldError("warmUsage", "water.warmUsage.lower"));
+		}
+		
+		return errors;
+	}
+	
 	private List<WaterUsageDO> calculateDifferences(Iterable<WaterUsage> collection) {
 		
 		List<WaterUsageDO> retVal = new ArrayList<>();
 		Iterator<WaterUsage> iter = collection.iterator();
-		WaterUsage previous = null;
+		WaterUsageDO previous = null;
 		while (iter.hasNext()) {
 			WaterUsage current = iter.next();
 			WaterUsageDO data = toDataObject(current);
 			if (previous != null) {
-				double coldDiff = doubleNotNullOperation(current.getColdUsage(), previous.getColdUsage(), (d1, d2) -> d1 - d2); 
-				data.setDiffCold(coldDiff);
-				double warmDiff = doubleNotNullOperation(current.getWarmUsage(), previous.getWarmUsage(), (d1, d2) -> d1 - d2);
-				data.setDiffWarm(warmDiff);
+				double coldDiff = doubleNotNullOperation(previous.getColdUsage(), current.getColdUsage(), (d1, d2) -> d1 - d2); 
+				previous.setDiffCold(coldDiff);
+				double warmDiff = doubleNotNullOperation(previous.getWarmUsage(), current.getWarmUsage(), (d1, d2) -> d1 - d2);
+				previous.setDiffWarm(warmDiff);
 				
-				int numOfDays = (int)ChronoUnit.DAYS.between(previous.getMeasured(), current.getMeasured());
-				data.setNumberOfDays(numOfDays);
+				int numOfDays = (int)ChronoUnit.DAYS.between(current.getMeasured(), previous.getMeasured());
+				previous.setNumberOfDays(numOfDays);
 				
-				data.setColdPerDay(coldDiff/numOfDays);
-				data.setWarmPerDay(warmDiff/numOfDays);
+				previous.setColdPerDay(coldDiff/numOfDays);
+				previous.setWarmPerDay(warmDiff/numOfDays);
 			}
 			
-			previous = current;
+			previous = data;
 			retVal.add(data);
 		}
 		

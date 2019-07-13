@@ -8,19 +8,21 @@
 	<body>
 	
 	<form th:action="@{/water/}" method="post" th:object="${waterUsage}">
-		<table>
+		<table border="1">
 			<tr>
 				<td><label for="meas">Merane</label></td>
-				<td><input id="meas" type="text" name="measured" /></td>
-				<td><p th:errors="*{measured}">Incorrect date</p></td>
+				<td><input id="meas" type="text" th:field="*{measured}" /></td>
+				<td th:if="${#fields.hasErrors('measured')}"><p th:errors="*{measured}">Incorrect date</p></td>
 			</tr>
 			<tr>
 				<td><label for="wu">Tepla voda</label></td>
-				<td><input id="wu" type="text" name="warmUsage" /></td>
+				<td><input id="wu" type="text" th:field="*{warmUsage}" /></td>
+				<td th:if="${#fields.hasErrors('warmUsage')}"><p th:errors="*{warmUsage}">Incorrect date</p></td>
 			</tr>
 			<tr>
 				<td><label for="cu">Studena voda</label></td>
-				<td><input id="cu" type="text" name="coldUsage" /></td>
+				<td><input id="cu" type="text" th:field="*{coldUsage}" /></td>
+				<td th:if="${#fields.hasErrors('coldUsage')}"><p th:errors="*{coldUsage}">Incorrect date</p></td>
 			</tr>
 			<tr>
 				<td />
@@ -28,6 +30,10 @@
 			</tr>
 		</table>
 	</form>
+	
+	<ul th:if="${validationErrors !=null}">
+		<li th:each="err : ${validationErrors}" th:text="#{${err.errorCode}}">validacia</li>
+	</ul>
 	
 	
 	<table border="1">
@@ -39,7 +45,7 @@
 			<th>Teplá za obdobie</th>
 			<th>Studená za obdobie</th>
 			<th>Teplá na deň</th>
-			<th>Studená za obdobie</th>
+			<th>Studená na deň</th>
 		</tr>
 		<tr th:each="row : ${usages}">
 			<td th:text="${#temporals.format(row.measured, 'dd.MM.yyyy')}"></td>
