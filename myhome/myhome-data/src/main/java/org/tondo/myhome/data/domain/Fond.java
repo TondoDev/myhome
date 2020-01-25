@@ -1,12 +1,7 @@
 package org.tondo.myhome.data.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Fond extends Investment {
@@ -20,8 +15,8 @@ public class Fond extends Investment {
 	// https://thoughts-on-java.org/hibernate-tips-unidirectional-one-to-many-association-without-junction-table/
 	//
 	// cascadeType.All - if Fond is deleted, it will delete all containing payments
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentFond")
-	private List<FondPayment> payments = new ArrayList<>();
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parentFond")
+//	private List<FondPayment> payments = new ArrayList<>();
 
 	public String getIsin() {
 		return isin;
@@ -31,11 +26,11 @@ public class Fond extends Investment {
 		this.isin = isin;
 	}
 
-	public List<FondPayment> getPayments() {
-		return payments;
-	}
-
-	public void setPayments(List<FondPayment> payments) {
-		this.payments = payments;
-	}
+//	public List<FondPayment> getPayments() {
+//		return payments;
+//	}
+//
+//	public void setPayments(List<FondPayment> payments) {
+//		this.payments = payments;
+//	}
 }

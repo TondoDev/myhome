@@ -2,13 +2,14 @@ package org.tondo.myhome.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.tondo.myhome.data.InvestmentSampleTestData.*; 
+import static org.tondo.myhome.data.InvestmentSampleTestData.createDefaultTestFond;
+import static org.tondo.myhome.data.InvestmentSampleTestData.createDefaultTestFondPayment;
+import static org.tondo.myhome.data.InvestmentSampleTestData.createFondWithPayment;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tondo.myhome.data.domain.Fond;
 import org.tondo.myhome.data.domain.FondPayment;
+import org.tondo.myhome.data.repo.FondPaymentRepository;
 import org.tondo.myhome.data.repo.FondRepository;
 import org.tondo.myhome.data.repo.InvestmentRepository;
 
@@ -29,6 +31,9 @@ public class InvestnetDataLayerTest {
 	
 	@Autowired
 	private FondRepository fondRepository;
+	
+	@Autowired
+	private FondPaymentRepository fondPaymentRepository;
 	
 	@Autowired
 	private InvestmentRepository investmentRepository;
@@ -86,9 +91,7 @@ public class InvestnetDataLayerTest {
 		payment.setUnitPrice(15d);
 		payment.setParentFond(fond);
 		
-		fond.getPayments().add(payment);
 		
-		entityManager.persist(fond);
 		entityManager.persist(fond);
 		
 		
@@ -132,16 +135,19 @@ public class InvestnetDataLayerTest {
 		Fond fond = createDefaultTestFond();
 		FondPayment payment = createDefaultTestFondPayment();
 		
-		fond.getPayments().add(payment);
 		payment.setParentFond(fond);
 		// fond repository can handle saving also for "Many side" entities
 		this.fondRepository.save(fond);
+		this.fondPaymentRepository.save(payment);
 		
 		Fond foundFound = this.fondRepository.findOne(fond.getId());
-		assertEquals(1,  foundFound.getPayments().size());
+		assertNotNull(foundFound);
+		
+		List<FondPayment> payments = fondPaymentRepository.findByParentFond(foundFound);
+		assertEquals(1,  payments.size());
 		
 		FondPayment anotherPayment = createDefaultTestFondPayment();
-		fond.getPayments().add(anotherPayment);
+		
 		anotherPayment.setParentFond(fond);
 		
 		// it will identify that we added new FondPayment into collection

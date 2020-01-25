@@ -34,9 +34,7 @@ public class InvestmentSampleTestData {
 		Fond fond = createDefaultTestFond();
 		
 		FondPayment payment = createDefaultTestFondPayment();
-		fond.getPayments().add(payment);
 		payment.setParentFond(fond);
-		
 		
 		return fond;
 	}
