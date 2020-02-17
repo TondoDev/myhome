@@ -2,9 +2,11 @@ package org.tondo.myhome.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.tondo.myhome.data.InvestmentSampleTestData.createDefaultTestFond;
 import static org.tondo.myhome.data.InvestmentSampleTestData.createDefaultTestFondPayment;
 import static org.tondo.myhome.data.InvestmentSampleTestData.createFondWithPayment;
+import static org.tondo.myhome.data.InvestmentSampleTestData.createPaymentForFond;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.tondo.myhome.data.domain.Fond;
 import org.tondo.myhome.data.domain.FondPayment;
+import org.tondo.myhome.data.domain.ShareSummary;
 import org.tondo.myhome.data.repo.FondPaymentRepository;
 import org.tondo.myhome.data.repo.FondRepository;
 import org.tondo.myhome.data.repo.InvestmentRepository;
@@ -50,7 +53,7 @@ public class InvestnetDataLayerTest {
 		
 		fond.setAmountOfPay(80.0);
 		fond.setDayOfPay("11");
-		fond.setFee(0.03);
+		fond.setFeePct(0.03);
 		fond.setIsin("xxyyy");
 		fond.setName("Moj Fond");
 		fond.setEstablishingDate(LocalDate.now());
@@ -78,7 +81,7 @@ public class InvestnetDataLayerTest {
 		
 		fond.setAmountOfPay(80.0);
 		fond.setDayOfPay("11");
-		fond.setFee(0.03);
+		fond.setFeePct(0.03);
 		fond.setIsin("xxyyy");
 		fond.setName("Moj Fond");
 		fond.setEstablishingDate(LocalDate.now());
@@ -87,7 +90,7 @@ public class InvestnetDataLayerTest {
 		FondPayment payment = new FondPayment();
 		payment.setBuyPrice(75.0);
 		payment.setDateOfPurchase(LocalDate.now());
-		payment.setFee(3.0);
+		payment.setFeeAmount(3.0);
 		payment.setUnitPrice(15d);
 		payment.setParentFond(fond);
 		
@@ -105,7 +108,7 @@ public class InvestnetDataLayerTest {
 		FondPayment payment2 = new FondPayment();
 		payment2.setBuyPrice(66.0);
 		payment2.setDateOfPurchase(LocalDate.now());
-		payment2.setFee(3.0);
+		payment2.setFeeAmount(3.0);
 		payment2.setUnitPrice(15d);
 		
 		entityManager.persist(payment2);
@@ -157,6 +160,64 @@ public class InvestnetDataLayerTest {
 		anotherPayment.setUnitPrice(1000d);
 		fond.setIsin("MSG");
 		this.fondRepository.save(fond);
+	}
+	
+	
+	
+	@Test
+	public void testSumOfPaymentsAndFees() {
+		Fond fond = createDefaultTestFond();
+		fondRepository.save(fond);
+		assertNotNull("Fond saved, id determined", fond.getId());
+		
+		ShareSummary summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
+		assertNull("For empty payment list, fees are returned as null", summary);
+		
+		FondPayment lastPaymentFromEmptyFond = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDesc(fond);
+		assertNull("Instance not created for Fond without fond payments", lastPaymentFromEmptyFond);
+		
+		
+		FondPayment payment = createDefaultTestFondPayment();
+		payment.setParentFond(fond);
+		payment.setBuyPrice(50.0);
+		payment.setUnitPrice(10.0);
+		payment.setDateOfPurchase(payment.getDateOfPurchase().plusDays(1));
+		fondPaymentRepository.save(payment);
+		
+		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
+		assertEquals("sum of fees for single payment", 3.0, summary.getTotalFees(), 0.001);
+		assertEquals("sum of owned values", 5.0, summary.getOwnedUnitsCount(), 0.001);
+		
+		FondPayment anotherPayment = createDefaultTestFondPayment();
+		anotherPayment.setParentFond(fond);
+		anotherPayment.setBuyPrice(50.0);
+		anotherPayment.setUnitPrice(0.01);
+		anotherPayment.setDateOfPurchase(anotherPayment.getDateOfPurchase().plusDays(2));
+		fondPaymentRepository.save(anotherPayment);
+		
+		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
+		assertEquals("sum of fees for two payments", 6.0, summary.getTotalFees(), 0.001);
+		assertEquals("sum of owned values", 5005.0, summary.getOwnedUnitsCount(), 0.001);
+		
+		
+		FondPayment lastPayment = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDesc(fond);
+		assertNotNull(lastPayment);
+		assertEquals(0.01, lastPayment.getUnitPrice(), 0.001);
+	}
+	
+	@Test
+	public void testFondSummaryAggregation() {
+		Fond first = createDefaultTestFond();
+		FondPayment fondPaymentFirst = createPaymentForFond(first);
+		fondRepository.save(first);
+		fondPaymentRepository.save(fondPaymentFirst);
+		
+		System.out.println(fondPaymentRepository.count());
+		
+		List<ShareSummary> summary = fondPaymentRepository.getSumOfPaymentsAndFees();
+		System.out.println(summary);
+
+		System.out.println(fondPaymentRepository.getSumOfPaymentsAndFees(first));
 	}
 	
 	

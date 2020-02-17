@@ -17,6 +17,8 @@ public abstract class InvestmentBaseDO {
 	private Double amountOfPay;
 	
 	private Integer paymentRecurrence;
+	
+	private Double feePct;
 
 	public Long getId() {
 		return id;
@@ -72,5 +74,13 @@ public abstract class InvestmentBaseDO {
 
 	public void setPaymentRecurrence(Integer paymentRecurrence) {
 		this.paymentRecurrence = paymentRecurrence;
+	}
+	
+	public Double getFeePct() {
+		return feePct;
+	}
+	
+	public void setFeePct(Double fee) {
+		this.feePct = fee;
 	}
 }

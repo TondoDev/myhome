@@ -46,7 +46,7 @@ public abstract class Investment {
 	
 	// percent 0 - 1
 	@Column(nullable = false)
-	private Double fee;
+	private Double feePct;
 
 	public Long getId() {
 		return id;
@@ -96,12 +96,12 @@ public abstract class Investment {
 		this.amountOfPay = amountOfPay;
 	}
 
-	public Double getFee() {
-		return fee;
+	public Double getFeePct() {
+		return feePct;
 	}
 
-	public void setFee(Double fee) {
-		this.fee = fee;
+	public void setFeePct(Double fee) {
+		this.feePct = fee;
 	}
 	
 	

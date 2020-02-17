@@ -55,7 +55,7 @@ public class FondPayment {
 	public Double getFee() {
 		return fee;
 	}
-	public void setFee(Double fee) {
+	public void setFeeAmount(Double fee) {
 		this.fee = fee;
 	}
 	public Double getBuyPrice() {

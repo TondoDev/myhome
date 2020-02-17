@@ -11,7 +11,7 @@ public class InvestmentSampleTestData {
 		Fond fond = new Fond();
 		fond.setAmountOfPay(80.0);
 		fond.setDayOfPay("11");
-		fond.setFee(0.03);
+		fond.setFeePct(0.03);
 		fond.setIsin("xxyyy");
 		fond.setName("Moj Fond");
 		fond.setEstablishingDate(LocalDate.now());
@@ -24,12 +24,20 @@ public class InvestmentSampleTestData {
 		FondPayment payment = new FondPayment();
 		payment.setBuyPrice(75.0);
 		payment.setDateOfPurchase(LocalDate.now());
-		payment.setFee(3.0);
+		payment.setFeeAmount(3.0);
 		payment.setUnitPrice(15d);
 		
 		return payment;
 	}
 	
+	public static FondPayment createPaymentForFond(Fond fond) {
+		FondPayment fp = createDefaultTestFondPayment();
+		fp.setParentFond(fond);
+		
+		return fp;
+	}
+	
+	@Deprecated
 	public static Fond createFondWithPayment() {
 		Fond fond = createDefaultTestFond();
 		

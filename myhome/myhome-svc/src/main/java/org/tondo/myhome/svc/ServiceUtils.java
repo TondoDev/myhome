@@ -13,4 +13,9 @@ public class ServiceUtils {
 			.map(func)
 			.collect(Collectors.toList());
 	}
+	
+	
+	public static Double doubleNullAsZero(Double value) {
+		return value == null ? 0.0  : value;
+	}
 }

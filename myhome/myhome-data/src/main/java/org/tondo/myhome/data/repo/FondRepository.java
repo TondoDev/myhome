@@ -10,4 +10,5 @@ import org.tondo.myhome.data.domain.Fond;
  */
 public interface FondRepository extends CrudRepository<Fond, Long> {
 
+	
 }
