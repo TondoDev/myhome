@@ -6,7 +6,7 @@ public class FondPaymentDO {
 	
 	private Long id;
 	
-	private LocalDate dateOfPruchase;
+	private LocalDate dateOfPurchase;
 	
 	private Double buyPrice;
 	
@@ -26,12 +26,12 @@ public class FondPaymentDO {
 		this.id = id;
 	}
 
-	public LocalDate getDateOfPruchase() {
-		return dateOfPruchase;
+	public LocalDate getDateOfPurchase() {
+		return dateOfPurchase;
 	}
 
-	public void setDateOfPruchase(LocalDate dateOfPruchase) {
-		this.dateOfPruchase = dateOfPruchase;
+	public void setDateOfPurchase(LocalDate dateOfPurchase) {
+		this.dateOfPurchase = dateOfPurchase;
 	}
 
 	public Double getBuyPrice() {
@@ -50,7 +50,7 @@ public class FondPaymentDO {
 		this.unitPrice = unitPrice;
 	}
 
-	public Double getFeeAmount() {
+	public Double getFee() {
 		return fee;
 	}
 

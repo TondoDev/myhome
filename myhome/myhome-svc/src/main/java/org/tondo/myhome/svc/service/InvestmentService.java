@@ -47,6 +47,15 @@ public class InvestmentService {
 		return iterableToDataObjectList(investmentRepository.findAll(), InvestmentService::toInvestmentDataObject);
 	}
 	
+	public List<FondDO> getFonds() {
+		return iterableToDataObjectList(fondRepository.findAllByOrderByEstablishingDateDescNameAsc(), InvestmentService::toFondDataObject);
+	}
+	
+	public FondDO getFond(Long id) {
+		Fond fond = fondRepository.findOne(id);
+		return fond == null ? null : toFondDataObject(fond);
+	}
+	
 	
 	public void createFond(FondDO fond) {
 		Fond toSave = toFondPersistentObject(fond);
@@ -72,7 +81,7 @@ public class InvestmentService {
 			// throw error
 		}
 		
-		List<FondPayment> paymentsData = fondPaymentRepository.findByParentFond(parentFond);
+		List<FondPayment> paymentsData = fondPaymentRepository.findByParentFondOrderByDateOfPurchaseDesc(parentFond);
 		return iterableToDataObjectList(paymentsData, InvestmentService::toFondPaymentDataObject);
 	}
 	
@@ -125,7 +134,7 @@ public class InvestmentService {
 		FondPaymentDO payment = new FondPaymentDO();
 		
 		payment.setFondId(obj.getParentFond().getId());
-		payment.setDateOfPruchase(obj.getDateOfPurchase());
+		payment.setDateOfPurchase(obj.getDateOfPurchase());
 		payment.setBuyPrice(obj.getBuyPrice());
 		payment.setFee(obj.getFee());
 		payment.setUnitPrice(obj.getUnitPrice());
@@ -136,17 +145,31 @@ public class InvestmentService {
 	private static InvestmentDO toInvestmentDataObject(Investment obj) {
 		InvestmentDO investmentDO = new InvestmentDO();
 		
-		investmentDO.setId(obj.getId());
-		investmentDO.setName(obj.getName());
-		investmentDO.setStartDate(obj.getEstablishingDate());
-		investmentDO.setEndDate(obj.getEndDate());
-		investmentDO.setAmountOfPay(obj.getAmountOfPay());
-		investmentDO.setPaymentRecurrence(obj.getPaymentRecurrence());
+		populateInvestmentAttributes(investmentDO, obj);
 		investmentDO.setType(resolveInvestmentType(obj));
-		investmentDO.setDayOfPay(obj.getDayOfPay());
-		investmentDO.setFeePct(obj.getFeePct());
 		
 		return investmentDO;
+	}
+	
+	private static void populateInvestmentAttributes(InvestmentBaseDO target, Investment src) {
+		target.setId(src.getId());
+		target.setName(src.getName());
+		target.setStartDate(src.getEstablishingDate());
+		target.setEndDate(src.getEndDate());
+		target.setAmountOfPay(src.getAmountOfPay());
+		target.setPaymentRecurrence(src.getPaymentRecurrence());
+		target.setDayOfPay(src.getDayOfPay());
+		target.setFeePct(src.getFeePct());
+	}
+	
+	
+	private static FondDO toFondDataObject(Fond obj) {
+		FondDO fondDo = new FondDO();
+		
+		populateInvestmentAttributes(fondDo, obj);
+		fondDo.setIsin(obj.getIsin());
+		
+		return fondDo;
 	}
 	
 	
@@ -162,9 +185,9 @@ public class InvestmentService {
 	private static FondPayment toFondPaymentPersistentObject(FondPaymentDO fondPaymentDo) {
 		FondPayment payment = new FondPayment();
 		
-		payment.setDateOfPurchase(fondPaymentDo.getDateOfPruchase());
+		payment.setDateOfPurchase(fondPaymentDo.getDateOfPurchase());
 		payment.setBuyPrice(fondPaymentDo.getBuyPrice());
-		payment.setFeeAmount(fondPaymentDo.getFeeAmount());
+		payment.setFeeAmount(fondPaymentDo.getFee());
 	 	
 		return payment;
 	}

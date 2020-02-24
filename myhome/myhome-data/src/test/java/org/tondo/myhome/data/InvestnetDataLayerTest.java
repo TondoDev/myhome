@@ -146,7 +146,7 @@ public class InvestnetDataLayerTest {
 		Fond foundFound = this.fondRepository.findOne(fond.getId());
 		assertNotNull(foundFound);
 		
-		List<FondPayment> payments = fondPaymentRepository.findByParentFond(foundFound);
+		List<FondPayment> payments = fondPaymentRepository.findByParentFondOrderByDateOfPurchaseDesc(foundFound);
 		assertEquals(1,  payments.size());
 		
 		FondPayment anotherPayment = createDefaultTestFondPayment();
@@ -228,5 +228,12 @@ public class InvestnetDataLayerTest {
 		
 		
 		this.investmentRepository.findAll().forEach(inv -> System.out.println(inv.getClass().getCanonicalName()));
+	}
+	
+	
+	@Test
+	public void testGetFondsOrdered() {
+		List<Fond> fonds = this.fondRepository.findAllByOrderByEstablishingDateDescNameAsc();
+		fonds.forEach(c -> System.out.println(c.getName()));
 	}
 }

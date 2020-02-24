@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8" />
+		<title>Investments - Main page</title>
+		<style type="text/css">
+		div {
+			float: left;
+		}
+		</style>
+	</head>
+	
+	<body>
+		<h1>Investments</h1>
+		<div>
+			<h2>Savings</h2>
+			<table border="1">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Isin</th>
+						<th>Created</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="fond : ${fonds}">
+						<td th:text="${fond.name}"></td>
+						<td th:text="${fond.isin}"></td>
+						<td th:text="${#temporals.format(fond.startDate, 'dd.MM.yyyy')}"></td>
+						<td><a th:href="@{/investment/fond/{id}(id=${fond.id})}">Detail</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div>
+			<h2>Fonds</h2>
+			<table border="1">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Isin</th>
+						<th>Created</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="fond : ${fonds}">
+						<td th:text="${fond.name}"></td>
+						<td th:text="${fond.isin}"></td>
+						<td th:text="${#temporals.format(fond.startDate, 'dd.MM.yyyy')}"></td>
+						<td><a th:href="@{/investment/fond/{id}(id=${fond.id})}" role="button">Detail</a></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<form action="#" method="get">
+				<input type="submit" th:formaction="@{/investment/fond/create}" value="New" />
+			</form>
+		</div>
+	</body>
+</html>

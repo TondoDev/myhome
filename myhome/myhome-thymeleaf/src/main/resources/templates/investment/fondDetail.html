@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Fond detail</title>
+</head>
+<body>
+	
+	
+	
+	<div>
+		<h1 th:value="${fond.name}">Fond detail</h1>
+		<div>	
+			<label for="fondIsin">ISIN</label>
+			<input type="text" id="fondIsin" name="isin" th:value="${fond.isin}"  readonly="readonly" />
+		</div>
+		
+		
+		<div>
+			<label for="fondStartDate">Start date</label>
+			<input type="text" id="fondStartDate" name="startDate" th:value="${{fond.startDate}}" value="132" readonly="readonly" />
+		
+			<label for="fondEndDate">End date</label>
+			<!-- Double bracket - it will use formatter registered globally - LocalDateConverter -->
+			<input type="text" id="fondEndDate" name="endDate" th:value="${{fond.endDate}}" value="132" readonly="readonly" />
+		</div>
+		
+		
+		<div>
+			<label for="fondAmountOfPay">Pay amount</label>
+			<input type="text" id="fondAmountOfPay" name="amountOfPay" th:value="${fond.amountOfPay}" value="132" readonly="readonly" />
+			
+			<label for="fondFeePct">Fee (%)</label>
+			<input type="text" id="fondFeePct" name="feePct" th:value="${fond.feePct}" value="123" readonly="readonly" />
+		</div>
+		
+		<div>
+			<label for="fondDayOfPay">Day of pay</label>
+			<input type="text" id="fondDayOfPay" name="dayOfPay" th:value="${fond.dayOfPay}" value="13" readonly="readonly"/>
+			
+			<label for="fondPaymentRecurrence">Recurrence</label>
+			<input type="text" id="fondPaymentRecurrence" name="paymentRecurrence" th:value="${fond.paymentRecurrence}" value="13" readonly="readonly"/>
+		</div>
+	</div>
+	
+	<div>
+		<h2>Fond value</h2>
+		
+		<div>
+			<form action="#">
+				<label for="unitValue">Unit Value</label>
+				<input type="text" id="unitValue" />
+				
+				<label for="toDate">To date</label>
+				<input type="text" id="toDate" />
+				
+				<input type="submit" value="Recalculate" />
+				<input type="button" value="Load price" />
+			</form>
+		</div>
+	</div>
+	
+	<div>
+		<h2>Payments</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Buy price</th>
+					<th>Fee</th>
+					<th>Unit price</th>
+					<th>Purchased units</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="fondPayment : ${fondPayments}">
+					<td th:text="${{fondPayment.dateOfPurchase}}">11.1.2020</td>
+					<td th:text="${fondPayment.buyPrice}"></td>
+					<td th:text="${fondPayment.fee}"></td>
+					<td th:text="${fondPayment.unitPrice}"></td>
+					<td th:text="${fondPayment.purchasedUnits}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

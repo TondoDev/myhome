@@ -3,12 +3,15 @@ package org.tondo.myhome.data.domain;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.tondo.myhome.data.LocalDateDbConverter;
 
 @Entity
 public class FondPayment {
@@ -17,7 +20,9 @@ public class FondPayment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
 	@Column(nullable = false)
+	@Convert(converter = LocalDateDbConverter.class)
 	private LocalDate dateOfPurchase;
 	
 	private Double fee;
