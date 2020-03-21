@@ -81,7 +81,7 @@ public class InvestmentService {
 			// throw error
 		}
 		
-		List<FondPayment> paymentsData = fondPaymentRepository.findByParentFondOrderByDateOfPurchaseDesc(parentFond);
+		List<FondPayment> paymentsData = fondPaymentRepository.findByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
 		return iterableToDataObjectList(paymentsData, InvestmentService::toFondPaymentDataObject);
 	}
 	
@@ -96,11 +96,10 @@ public class InvestmentService {
 		FondValueDO fondValue = toFondValueDataObject(summary);
 		
 		
-		FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDesc(parentFond);
-		
-		if (lastPayment != null) {
-			// in other words Fond has at least one payment
-			calculateFondValueByUnitPrice(fondValue, lastPayment.getUnitPrice());
+		FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
+		if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
+			double unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
+			calculateFondValueByUnitPrice(fondValue, unitPrice);
 		}
 		
 		
@@ -108,6 +107,13 @@ public class InvestmentService {
 		return fondValue;
 		
 	}
+	
+	private static boolean isZero(double number) {
+		final double threshold = 0.00001;
+
+		return number >= -threshold && number <= threshold;
+	}
+
 	
 	private void calculateFondValueByUnitPrice(FondValueDO fondValue, Double unitPrice) {
 		if (unitPrice == null) {
@@ -138,13 +144,13 @@ public class InvestmentService {
 		payment.setDateOfPurchase(obj.getDateOfPurchase());
 		payment.setBuyPrice(doubleNullAsZero(obj.getBuyPrice()));
 		payment.setFee(doubleNullAsZero(obj.getFee()));
-		payment.setUnitPrice(doubleNullAsZero(obj.getUnitPrice()));
+		payment.setPurchasedUnits(doubleNullAsZero(obj.getPurchasedUnits()));
 		
-		if (payment.getUnitPrice() > 0.0) {
-			payment.setPurchasedUnits(payment.getBuyPrice()/payment.getUnitPrice());
-		} else {
-			payment.setPurchasedUnits(0.0);
+		if (!isZero(payment.getPurchasedUnits())) {
+			payment.setUnitPrice(payment.getBuyPrice()/payment.getPurchasedUnits());
 		}
+		
+	
 		
 		return payment;
 	}
@@ -195,22 +201,10 @@ public class InvestmentService {
 		payment.setDateOfPurchase(fondPaymentDo.getDateOfPurchase());
 		payment.setBuyPrice(fondPaymentDo.getBuyPrice());
 		payment.setFeeAmount(fondPaymentDo.getFee());
+		payment.setPurchasedUnits(fondPaymentDo.getPurchasedUnits());
 		
-		if (fondPaymentDo.getPurchasedUnits() != null && !isZero(fondPaymentDo.getPurchasedUnits())) {
-			payment.setUnitPrice(fondPaymentDo.getBuyPrice()/fondPaymentDo.getPurchasedUnits());
-		} else {
-			payment.setUnitPrice(null);
-		}
-	 	
 		return payment;
 	}
-	
-	private static boolean isZero(double number) {
-		final double threshold = 0.00001;
-		
-		return number >= -threshold && number <= threshold;
-	}
-	
 	
 	private static void populateInvestmentPersistent(Investment target, InvestmentBaseDO src) {
 		target.setId(src.getId());

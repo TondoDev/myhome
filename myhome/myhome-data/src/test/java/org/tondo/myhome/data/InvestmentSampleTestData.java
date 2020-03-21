@@ -25,7 +25,7 @@ public class InvestmentSampleTestData {
 		payment.setBuyPrice(75.0);
 		payment.setDateOfPurchase(LocalDate.now());
 		payment.setFeeAmount(3.0);
-		payment.setUnitPrice(15d);
+		payment.setPurchasedUnits(15d);
 		
 		return payment;
 	}

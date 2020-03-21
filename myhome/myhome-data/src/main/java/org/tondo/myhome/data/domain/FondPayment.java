@@ -31,7 +31,7 @@ public class FondPayment {
 	private Double buyPrice;
 	
 	@Column(nullable = false)
-	private Double unitPrice;
+	private Double purchasedUnits;
 	
 	@ManyToOne
 	@JoinColumn(nullable=false)
@@ -69,10 +69,10 @@ public class FondPayment {
 	public void setBuyPrice(Double buyPrice) {
 		this.buyPrice = buyPrice;
 	}
-	public Double getUnitPrice() {
-		return unitPrice;
+	public Double getPurchasedUnits() {
+		return purchasedUnits;
 	}
-	public void setUnitPrice(Double unitPrice) {
-		this.unitPrice = unitPrice;
+	public void setPurchasedUnits(Double purchasedUnits) {
+		this.purchasedUnits = purchasedUnits;
 	}
 }

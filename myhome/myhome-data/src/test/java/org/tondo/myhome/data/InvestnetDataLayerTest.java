@@ -63,7 +63,8 @@ public class InvestnetDataLayerTest {
 		
 		
 		List<Fond> results = entityManager.createQuery("from Fond", Fond.class).getResultList();
-		assertEquals(1, results.size());
+		// one we got from SQL init script and the 2nd we just created
+		assertEquals(2, results.size());
 		
 		System.out.println(results.get(0).getName());
 		System.out.println(results.get(0));
@@ -91,7 +92,7 @@ public class InvestnetDataLayerTest {
 		payment.setBuyPrice(75.0);
 		payment.setDateOfPurchase(LocalDate.now());
 		payment.setFeeAmount(3.0);
-		payment.setUnitPrice(15d);
+		payment.setPurchasedUnits(15d);
 		payment.setParentFond(fond);
 		
 		
@@ -99,7 +100,8 @@ public class InvestnetDataLayerTest {
 		
 		
 		List<Fond> results = entityManager.createQuery("from Fond", Fond.class).getResultList();
-		assertEquals(1, results.size());
+		// one we got from SQL init script and the 2nd we just created
+		assertEquals(2, results.size());
 		
 		System.out.println(results.get(0).getName());
 		System.out.println(results.get(0));
@@ -109,7 +111,8 @@ public class InvestnetDataLayerTest {
 		payment2.setBuyPrice(66.0);
 		payment2.setDateOfPurchase(LocalDate.now());
 		payment2.setFeeAmount(3.0);
-		payment2.setUnitPrice(15d);
+		payment2.setPurchasedUnits(15d);
+		payment2.setParentFond(fond);
 		
 		entityManager.persist(payment2);
 		
@@ -146,7 +149,7 @@ public class InvestnetDataLayerTest {
 		Fond foundFound = this.fondRepository.findOne(fond.getId());
 		assertNotNull(foundFound);
 		
-		List<FondPayment> payments = fondPaymentRepository.findByParentFondOrderByDateOfPurchaseDesc(foundFound);
+		List<FondPayment> payments = fondPaymentRepository.findByParentFondOrderByDateOfPurchaseDescIdDesc(foundFound);
 		assertEquals(1,  payments.size());
 		
 		FondPayment anotherPayment = createDefaultTestFondPayment();
@@ -157,7 +160,7 @@ public class InvestnetDataLayerTest {
 		this.fondRepository.save(fond);
 		
 		// I wanted to try whether some update SQL will be executed, but it wasn't
-		anotherPayment.setUnitPrice(1000d);
+		anotherPayment.setPurchasedUnits(1000d);
 		fond.setIsin("MSG");
 		this.fondRepository.save(fond);
 	}
@@ -173,36 +176,36 @@ public class InvestnetDataLayerTest {
 		ShareSummary summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
 		assertNull("For empty payment list, fees are returned as null", summary);
 		
-		FondPayment lastPaymentFromEmptyFond = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDesc(fond);
+		FondPayment lastPaymentFromEmptyFond = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(fond);
 		assertNull("Instance not created for Fond without fond payments", lastPaymentFromEmptyFond);
 		
 		
 		FondPayment payment = createDefaultTestFondPayment();
 		payment.setParentFond(fond);
 		payment.setBuyPrice(50.0);
-		payment.setUnitPrice(10.0);
+		payment.setPurchasedUnits(10.0);
 		payment.setDateOfPurchase(payment.getDateOfPurchase().plusDays(1));
 		fondPaymentRepository.save(payment);
 		
 		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
 		assertEquals("sum of fees for single payment", 3.0, summary.getTotalFees(), 0.001);
-		assertEquals("sum of owned values", 5.0, summary.getOwnedUnitsCount(), 0.001);
+		assertEquals("sum of owned values", 10.0, summary.getOwnedUnitsCount(), 0.001);
 		
 		FondPayment anotherPayment = createDefaultTestFondPayment();
 		anotherPayment.setParentFond(fond);
 		anotherPayment.setBuyPrice(50.0);
-		anotherPayment.setUnitPrice(0.01);
+		anotherPayment.setPurchasedUnits(5.0);
 		anotherPayment.setDateOfPurchase(anotherPayment.getDateOfPurchase().plusDays(2));
 		fondPaymentRepository.save(anotherPayment);
 		
 		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
 		assertEquals("sum of fees for two payments", 6.0, summary.getTotalFees(), 0.001);
-		assertEquals("sum of owned values", 5005.0, summary.getOwnedUnitsCount(), 0.001);
+		assertEquals("sum of owned values", 15.0, summary.getOwnedUnitsCount(), 0.001);
 		
 		
-		FondPayment lastPayment = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDesc(fond);
+		FondPayment lastPayment = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(fond);
 		assertNotNull(lastPayment);
-		assertEquals(0.01, lastPayment.getUnitPrice(), 0.001);
+		assertEquals(5d, lastPayment.getPurchasedUnits(), 0.001);
 	}
 	
 	@Test
