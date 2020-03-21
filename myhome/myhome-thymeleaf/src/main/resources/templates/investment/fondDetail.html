@@ -58,7 +58,48 @@
 				<input type="button" value="Load price" />
 			</form>
 		</div>
+			
+		<hr />
+		<div th:object="${fondValue}">
+			<div>
+				<label for="forUnitPrice">For unit price</label>
+				<input type="text" id="forUnitPrice" name="unitPrice" th:value="*{unitPrice}" value="13" readonly="readonly"/>
+				
+				<label for="fondOwnedUnits">Owned units</label>
+				<input type="text" id="fondOwnedUnits" name="ownedUnits" th:value="*{ownedUnits}" value="17" readonly="readonly"/>
+			</div>
+			
+			<div>
+				<label for="fondTotalInvest">Total amount invested</label>
+				<input type="text" id="fondTotalInvest" name="totalInvest" th:value="*{totalInvest}" value="14" readonly="readonly"/>
+				
+				<label for="fondTotalBuyPrice">Buy value</label>
+				<input type="text" id="fondTotalBuyPrice" name="totalBuyPrice" th:value="*{totalBuyPrice}" value="15" readonly="readonly"/>
+				
+				<label for="fondTotalFees">Fees</label>
+				<input type="text" id="fondTotalFees" name="totalFees" th:value="*{totalFees}" value="16" readonly="readonly"/>
+			</div>
+			
+			<div>
+				<label for="fondTotalValue">Fond Value</label>
+				<input type="text" id="fondTotalValue" name="totalFondValue" th:value="*{totalFondValue}" value="16" readonly="readonly"/>
+				
+				<label for="fondCleanProfit">Clean profit</label>
+				<input type="text" id="fondCleanProfit" name="profit" th:value="*{profit}" value="16" readonly="readonly"/>
+				
+				<label for="fondProfit">Fond profit</label>
+				<input type="text" id="fondProfit" name="actualFondProfit" th:value="*{actualFondProfit}" value="16" readonly="readonly"/>
+			</div>
+			
+		</div>
 	</div>
+	
+	<div>
+		<form action="#" method="get">
+				<input type="submit" th:formaction="@{/investment/fond/{id}/createPayment(id=${fond.id})}" value="New Payment" />
+			</form>
+	</div>
+	
 	
 	<div>
 		<h2>Payments</h2>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Create Payment</title>
+</head>
+<body>
+	<h1>Create a fond payment</h1>
+	
+	<form method="post" action="#" th:action="@{/investment/fond/{fondId}/fondPayment/(fondId=*{fondId})}" th:object="${fondPayment}">
+		<label for="dateOfPurchase" >Buy Date</label>
+		<input type="text" th:field="*{dateOfPurchase}" />
+		
+		<label for="buyPrice">Buy price</label>
+		<input type="text" th:field="*{buyPrice}" />
+		
+		<label for="fee">Fee</label>
+		<input type="text" th:field="*{fee}" />
+		
+		<label for="purchasedUnits">Purchased units</label>
+		<input type="text" th:field="*{purchasedUnits}" />
+		
+		<div>
+			<input type="submit" value="Create" />
+		</div>
+	</form>
+	
+</body>
+</html>

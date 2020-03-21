@@ -116,8 +116,9 @@ public class InvestmentService {
 		
 		fondValue.setUnitPrice(unitPrice);
 		fondValue.setTotalFondValue(unitPrice * fondValue.getOwnedUnits());
+		fondValue.setTotalInvest(fondValue.getTotalFees() + fondValue.getTotalBuyPrice());
 		fondValue.setActualFondProfit(fondValue.getTotalFondValue() -  fondValue.getTotalBuyPrice());
-		fondValue.setProfit(fondValue.getActualFondProfit() - fondValue.getTotalFees());
+		fondValue.setProfit(fondValue.getTotalFondValue() - fondValue.getTotalInvest());
 	}
 	
 	private static FondValueDO toFondValueDataObject(ShareSummary summary) {
@@ -135,9 +136,15 @@ public class InvestmentService {
 		
 		payment.setFondId(obj.getParentFond().getId());
 		payment.setDateOfPurchase(obj.getDateOfPurchase());
-		payment.setBuyPrice(obj.getBuyPrice());
-		payment.setFee(obj.getFee());
-		payment.setUnitPrice(obj.getUnitPrice());
+		payment.setBuyPrice(doubleNullAsZero(obj.getBuyPrice()));
+		payment.setFee(doubleNullAsZero(obj.getFee()));
+		payment.setUnitPrice(doubleNullAsZero(obj.getUnitPrice()));
+		
+		if (payment.getUnitPrice() > 0.0) {
+			payment.setPurchasedUnits(payment.getBuyPrice()/payment.getUnitPrice());
+		} else {
+			payment.setPurchasedUnits(0.0);
+		}
 		
 		return payment;
 	}
@@ -188,8 +195,20 @@ public class InvestmentService {
 		payment.setDateOfPurchase(fondPaymentDo.getDateOfPurchase());
 		payment.setBuyPrice(fondPaymentDo.getBuyPrice());
 		payment.setFeeAmount(fondPaymentDo.getFee());
+		
+		if (fondPaymentDo.getPurchasedUnits() != null && !isZero(fondPaymentDo.getPurchasedUnits())) {
+			payment.setUnitPrice(fondPaymentDo.getBuyPrice()/fondPaymentDo.getPurchasedUnits());
+		} else {
+			payment.setUnitPrice(null);
+		}
 	 	
 		return payment;
+	}
+	
+	private static boolean isZero(double number) {
+		final double threshold = 0.00001;
+		
+		return number >= -threshold && number <= threshold;
 	}
 	
 	
