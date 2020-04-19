@@ -31,7 +31,7 @@
 			<input type="text" id="fondAmountOfPay" name="amountOfPay" th:value="${fond.amountOfPay}" value="132" readonly="readonly" />
 			
 			<label for="fondFeePct">Fee (%)</label>
-			<input type="text" id="fondFeePct" name="feePct" th:value="${fond.feePct}" value="123" readonly="readonly" />
+			<input type="text" id="fondFeePct" name="feePct" th:value="${fond.feePct*100}" value="123" readonly="readonly" />
 		</div>
 		
 		<div>
@@ -47,9 +47,9 @@
 		<h2>Fond value</h2>
 		
 		<div>
-			<form action="#">
-				<label for="unitValue">Unit Value</label>
-				<input type="text" id="unitValue" />
+			<form th:formaction="@{/investment/fond/{id}(id=${fond.id})}" method="GET">
+				<label for="enteredUnitValue">Unit Value</label>
+				<input type="text" id="enteredUnitValue" name="enteredUnitValue" th:value="${enteredUnitValue}"/>
 				
 				<label for="toDate">To date</label>
 				<input type="text" id="toDate" />

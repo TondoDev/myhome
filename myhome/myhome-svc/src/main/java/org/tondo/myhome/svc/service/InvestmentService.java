@@ -85,7 +85,7 @@ public class InvestmentService {
 		return iterableToDataObjectList(paymentsData, InvestmentService::toFondPaymentDataObject);
 	}
 	
-	public FondValueDO calculateFondValue(Long fondId) {
+	public FondValueDO calculateFondValue(Long fondId, Double forPrice) {
 		Fond parentFond = fondRepository.findOne(fondId);
 		
 		if (parentFond == null) {
@@ -95,14 +95,21 @@ public class InvestmentService {
 		ShareSummary summary = this.fondPaymentRepository.getSumOfPaymentsAndFees(parentFond);
 		FondValueDO fondValue = toFondValueDataObject(summary);
 		
-		
-		FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
-		if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
-			double unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
-			calculateFondValueByUnitPrice(fondValue, unitPrice);
+		double unitPrice = 0.0;
+		if (forPrice != null && forPrice > 0.0) {
+			// if unit prices came from outside, we use it
+			unitPrice = forPrice;
+		} else {
+			// used unit price calculated from last purchase
+			FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
+			if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
+				unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
+			}
 		}
 		
-		
+		if (unitPrice > 0.0) {
+			calculateFondValueByUnitPrice(fondValue, unitPrice);
+		}
 		
 		return fondValue;
 		

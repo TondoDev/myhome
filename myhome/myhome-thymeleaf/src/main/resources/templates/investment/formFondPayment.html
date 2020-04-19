@@ -7,23 +7,42 @@
 <body>
 	<h1>Create a fond payment</h1>
 	
+	<a th:href="@{/investment/fond/{fondId}/(fondId=*{fondId})}" >Back</a>
+	
 	<form method="post" action="#" th:action="@{/investment/fond/{fondId}/fondPayment/(fondId=*{fondId})}" th:object="${fondPayment}">
-		<label for="dateOfPurchase" >Buy Date</label>
-		<input type="text" th:field="*{dateOfPurchase}" />
 		
-		<label for="buyPrice">Buy price</label>
-		<input type="text" th:field="*{buyPrice}" />
-		
-		<label for="fee">Fee</label>
-		<input type="text" th:field="*{fee}" />
-		
-		<label for="purchasedUnits">Purchased units</label>
-		<input type="text" th:field="*{purchasedUnits}" />
-		
+		<div th:if="${#fields.hasAnyErrors()}">
+			<ul>
+				<li th:each="fieldErr : ${#fields.allErrors()}" th:text="${fieldErr}">Error</li>
+			</ul>
+		</div>
 		<div>
-			<input type="submit" value="Create" />
+			<label for="dateOfPurchase" >Buy Date</label>
+			<input type="text" th:field="*{dateOfPurchase}" />
+			
+			<label for="buyPrice">Buy price</label>
+			<input type="text" th:field="*{buyPrice}" />
+			
+			<label for="fee">Fee</label>
+			<input type="text" th:field="*{fee}" />
+			
+			<label for="purchasedUnits">Purchased units</label>
+			<input type="text" th:field="*{purchasedUnits}" />
+			
+			<div>
+				<input type="submit" value="Create" />
+			</div>
 		</div>
 	</form>
+	
+<!-- 	<div th:if="${#fields.hasErrors('${fondPayment.*}')}"> -->
+	<div th:if="${#fields.hasErrors('${fondPayment.*}')}">
+		<ul>
+			<li th:each="fe : ${#fields.detailedErrors()}" th:text="${fe}">y</li>
+		</ul>
+	</div>
+	
+	
 	
 </body>
 </html>

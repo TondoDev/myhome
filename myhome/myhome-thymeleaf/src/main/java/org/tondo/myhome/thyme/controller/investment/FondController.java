@@ -8,9 +8,13 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.tondo.myhome.dto.invest.FondDO;
 import org.tondo.myhome.dto.invest.FondPaymentDO;
 import org.tondo.myhome.dto.invest.FondValueDO;
@@ -19,7 +23,7 @@ import org.tondo.myhome.svc.service.InvestmentService;
 @Controller
 @RequestMapping("/investment/fond")
 public class FondController {
-	
+	// https://www.csob.sk/delegate/getMutualFundDetails?ID=CSOB00000013
 	
 	private InvestmentService investmentService;
 	
@@ -30,15 +34,20 @@ public class FondController {
 	}
 	
 	@RequestMapping("/{fondId}")
-	public String fondDetail(@PathVariable Long fondId, Model model) {
+	public String fondDetail(@PathVariable Long fondId,  @RequestParam(name = "enteredUnitValue", required = false) Double enteredUnitValue, Model model) {
 		
+		
+		if (enteredUnitValue != null && enteredUnitValue > 0.0) {
+			model.addAttribute("enteredUnitValue", enteredUnitValue);
+		}
+		System.out.println("Unit value: " + enteredUnitValue);
 		FondDO fondDo = this.investmentService.getFond(fondId);
 		model.addAttribute("fond", fondDo);
 		
 		List<FondPaymentDO> payments = this.investmentService.getFondPayments(fondId);
 		model.addAttribute("fondPayments", payments);
 		
-		FondValueDO fondValue = this.investmentService.calculateFondValue(fondId);
+		FondValueDO fondValue = this.investmentService.calculateFondValue(fondId, enteredUnitValue);
 		model.addAttribute("fondValue", fondValue);
 		
 		return "investment/fondDetail";
@@ -46,9 +55,15 @@ public class FondController {
 	
 	@RequestMapping("/{fondId}/createPayment")
 	public String formCreateFondPayment(@PathVariable Long fondId, Model model) {
+		
 		FondPaymentDO fondPayment = new FondPaymentDO();
 		fondPayment.setFondId(fondId);
 		fondPayment.setDateOfPurchase(LocalDate.now());
+		
+		FondDO fondDo = this.investmentService.getFond(fondId);
+		double calculatedFee = fondDo.getAmountOfPay() * fondDo.getFeePct();
+		fondPayment.setFee(calculatedFee);
+		fondPayment.setBuyPrice(fondDo.getAmountOfPay() - calculatedFee);
 		
 		model.addAttribute("fondPayment", fondPayment);
 		
@@ -57,16 +72,18 @@ public class FondController {
 	
 	
 	@PostMapping("/{fondId}/fondPayment/")
-	public String createFondPayment(@PathVariable Long fondId, @Valid FondPaymentDO fondPayment, Model model) {
+	public String createFondPayment(@PathVariable Long fondId,  @ModelAttribute("fondPayment") @Valid FondPaymentDO fondPayment, BindingResult bindings, Model model) {
 		
-		if (fondId == null) {
+		if (bindings.hasErrors()) {
 			model.addAttribute("fondPayment", fondPayment);
+			// this is the error code, which will be resolved in localization resources
+			// bindings.reject("Some additional error");
+			bindings.addError(new ObjectError("fondPayment", "Some global error!"));
 			return "investment/formFondPayment";
 		}
 		
 		this.investmentService.createFondPayment(fondPayment);
 		
-		System.out.println("FondId = " + fondId);
 		return "redirect:/investment/fond/" + fondId;
 	}
 	
