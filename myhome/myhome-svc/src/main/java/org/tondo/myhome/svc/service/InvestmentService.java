@@ -93,7 +93,14 @@ public class InvestmentService {
 		}
 		
 		ShareSummary summary = this.fondPaymentRepository.getSumOfPaymentsAndFees(parentFond);
-		FondValueDO fondValue = toFondValueDataObject(summary);
+		
+		FondValueDO fondValue;
+		if (summary != null) {
+			fondValue = toFondValueDataObject(summary);
+		} else {
+			fondValue = new FondValueDO();
+		}
+		 
 		
 		double unitPrice = 0.0;
 		if (forPrice != null && forPrice > 0.0) {
@@ -220,6 +227,7 @@ public class InvestmentService {
 		target.setEndDate(src.getEndDate());
 		target.setDayOfPay(src.getDayOfPay());
 		target.setFeePct(src.getFeePct());
+		target.setAmountOfPay(src.getAmountOfPay());
 		target.setPaymentRecurrence(src.getPaymentRecurrence());
 	}
 	

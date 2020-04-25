@@ -2,22 +2,33 @@ package org.tondo.myhome.dto.invest;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+
 public abstract class InvestmentBaseDO {
 
 	private Long id;
 	
+	@NotNull
 	private String name;
 	
+	@NotNull
 	private LocalDate startDate;
 	
 	private LocalDate endDate;
 	
 	private String dayOfPay;
 	
+	@NotNull
+	@DecimalMin("0.001")
+	@DecimalMax("1.0")
 	private Double amountOfPay;
 	
 	private Integer paymentRecurrence;
 	
+	@NotNull
+	@DecimalMin("0.0")
 	private Double feePct;
 
 	public Long getId() {

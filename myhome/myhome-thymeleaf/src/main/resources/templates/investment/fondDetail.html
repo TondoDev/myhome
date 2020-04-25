@@ -10,6 +10,7 @@
 	
 	<div>
 		<h1 th:value="${fond.name}">Fond detail</h1>
+		<a th:href="@{/investment/}" >Back</a>
 		<div>	
 			<label for="fondIsin">ISIN</label>
 			<input type="text" id="fondIsin" name="isin" th:value="${fond.isin}"  readonly="readonly" />

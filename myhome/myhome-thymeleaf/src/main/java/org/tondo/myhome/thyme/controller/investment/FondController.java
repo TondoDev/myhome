@@ -71,6 +71,7 @@ public class FondController {
 	}
 	
 	
+	// ModelAttributeName = binding result is populated by default with entries named by class
 	@PostMapping("/{fondId}/fondPayment/")
 	public String createFondPayment(@PathVariable Long fondId,  @ModelAttribute("fondPayment") @Valid FondPaymentDO fondPayment, BindingResult bindings, Model model) {
 		
@@ -88,9 +89,26 @@ public class FondController {
 	}
 	
 	@RequestMapping("/create")
-	public String createFondForm(Model model) {
+	public String createFondForm( Model model) {
+		FondDO defaultFond =  new FondDO();
+		defaultFond.setStartDate(LocalDate.now());
+		defaultFond.setFeePct(0.0);
+		model.addAttribute("fond", defaultFond);
+		return "investment/formFond";
+	}
+	
+	@PostMapping("/")
+	public String createFond(@ModelAttribute("fond") @Valid FondDO fond, BindingResult bindings,  Model model) {
 		
-		return "investment/newFond";
+		
+		if (bindings.hasErrors()) {
+			model.addAttribute("fond", fond);
+			return "investment/formFond";
+		}
+		
+		this.investmentService.createFond(fond);
+		
+		return "redirect:/investment/";
 	}
 
 }
