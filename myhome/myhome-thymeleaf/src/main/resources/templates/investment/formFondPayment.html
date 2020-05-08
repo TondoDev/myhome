@@ -7,7 +7,7 @@
 <body>
 	<h1>Create a fond payment</h1>
 	
-	<a th:href="@{/investment/fond/{fondId}/(fondId=*{fondId})}" >Back</a>
+	<a th:href="@{/investment/fond/{fondId}/(fondId=${fondId})}" >Back</a>
 	
 	<form method="post" action="#" th:action="@{/investment/fond/{fondId}/fondPayment/(fondId=*{fondId})}" th:object="${fondPayment}">
 		

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Create fond</title>
+</head>
+<body>
+	<h1>Edit a fond</h1>
+
+	<!--  example how to conditionally construct URL from current query parameter -->
+	<!-- a th:href="@{${param.back != null ? param.back[0] : '/investment/'}}" >Back</a -->
+	
+	
+	<a th:href="@{${backUrl != null ? backUrl : '/investment/'}}" >Back</a>
+	<form th:action="@{/investment/fond/{fondId}(fondId=${fond.id})}" th:method="put" th:object="${fond}">
+		<input type="hidden" name="backUrl" th:value="${backUrl != null ? backUrl : '/investment/'}"/>
+		<div th:replace="investment/common_parts :: fondFields('Edit')" ></div>
+	</form>
+	
+</body>
+</html>

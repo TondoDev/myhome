@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Create fond</title>
+</head>
+<body>
+	<h1>Create a fond</h1>
+	
+	<a th:href="@{/investment/fond/}" >Back</a>
+	<form th:action="@{/investment/fond/}" method="post" th:object="${fond}">
+		<div th:replace="investment/common_parts :: fondFields('Create')" ></div>
+	</form>
+	
+</body>
+</html>

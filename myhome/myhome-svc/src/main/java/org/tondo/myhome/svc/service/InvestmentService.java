@@ -57,9 +57,20 @@ public class InvestmentService {
 	}
 	
 	
-	public void createFond(FondDO fond) {
+	public FondDO createFond(FondDO fond) {
 		Fond toSave = toFondPersistentObject(fond);
-		this.fondRepository.save(toSave);
+		Fond saved = this.fondRepository.save(toSave);
+		return toFondDataObject(saved);
+	}
+	
+	public void updateFond(FondDO fond) {
+		Fond original = this.fondRepository.findOne(fond.getId());
+		if (original == null) {
+			System.err.println("Fond with id: " + fond.getId() + " doesn't exist!");
+		}
+		
+		Fond toUpdate = toFondPersistentObject(fond);
+		fondRepository.save(toUpdate);
 	}
 	
 	public void createFondPayment(FondPaymentDO fondPayment) {

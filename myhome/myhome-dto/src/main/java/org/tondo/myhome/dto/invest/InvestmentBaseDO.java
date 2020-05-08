@@ -22,12 +22,13 @@ public abstract class InvestmentBaseDO {
 	
 	@NotNull
 	@DecimalMin("0.001")
-	@DecimalMax("1.0")
+	
 	private Double amountOfPay;
 	
 	private Integer paymentRecurrence;
 	
 	@NotNull
+	@DecimalMax("1.0")
 	@DecimalMin("0.0")
 	private Double feePct;
 

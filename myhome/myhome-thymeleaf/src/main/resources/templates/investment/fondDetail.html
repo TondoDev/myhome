@@ -19,6 +19,7 @@
 		
 		<div>
 			<label for="fondStartDate">Start date</label>
+				<!-- Double bracket - it will use formatter registered globally - LocalDateConverter -->
 			<input type="text" id="fondStartDate" name="startDate" th:value="${{fond.startDate}}" value="132" readonly="readonly" />
 		
 			<label for="fondEndDate">End date</label>
@@ -42,6 +43,12 @@
 			<label for="fondPaymentRecurrence">Recurrence</label>
 			<input type="text" id="fondPaymentRecurrence" name="paymentRecurrence" th:value="${fond.paymentRecurrence}" value="13" readonly="readonly"/>
 		</div>
+	</div>
+	
+	<!-- Fond actions -->
+	<div>
+		<a th:href="@{/investment/fond/{id}/edit?backUrl={backUrl}(id=${fond.id},backUrl=${#httpServletRequest.requestURI})}" role="button">Edit</a>
+		<a href="#" role="button">Delete</a>
 	</div>
 	
 	<div>

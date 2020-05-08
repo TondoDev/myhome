@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.tondo.myhome.dto.invest.FondDO;
@@ -94,21 +97,51 @@ public class FondController {
 		defaultFond.setStartDate(LocalDate.now());
 		defaultFond.setFeePct(0.0);
 		model.addAttribute("fond", defaultFond);
-		return "investment/formFond";
+		return "investment/formFondCreate";
 	}
+	
+	
+	@RequestMapping("/{fondId}/edit")
+	public String updateFondForm(@PathVariable Long fondId, @RequestParam(name = "backUrl", required = false) String backUrl, Model model, HttpRequest request) {
+		FondDO fond = this.investmentService.getFond(fondId);
+		model.addAttribute("fond", fond);
+		model.addAttribute("backUrl", backUrl);
+		return "investment/formFondEdit";
+	}
+	
+	
+	@PutMapping("/{fondId}")
+	public String updateFond(
+			// binding result must follow the input structure
+			@ModelAttribute("fond") @Valid FondDO fond, BindingResult bindings,
+			@ModelAttribute("backUrl") String backUrl,
+			@PathVariable("fondId") Long fondId,
+			Model model) {
+		
+		if (bindings.hasErrors()) {
+			fond.setId(fondId);	// because we don't have fondID in request (POST) parameters, only in path variable
+			model.addAttribute("fond", fond);
+			model.addAttribute("backUrl", backUrl);
+			return "investment/formFondEdit";
+		}
+		
+		fond.setId(fondId);
+		this.investmentService.updateFond(fond);
+		
+		return "redirect:/investment/fond/" + fondId;
+	}
+	
+	
 	
 	@PostMapping("/")
 	public String createFond(@ModelAttribute("fond") @Valid FondDO fond, BindingResult bindings,  Model model) {
-		
-		
 		if (bindings.hasErrors()) {
 			model.addAttribute("fond", fond);
-			return "investment/formFond";
+			return "investment/formFondCreate";
 		}
 		
-		this.investmentService.createFond(fond);
-		
-		return "redirect:/investment/";
+		FondDO savedFond = this.investmentService.createFond(fond);
+		return "redirect:/investment/" + savedFond.getId();
 	}
 
 }

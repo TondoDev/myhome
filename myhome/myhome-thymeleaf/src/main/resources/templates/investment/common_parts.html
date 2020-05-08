@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+
+<body>
+	<!-- parameter is for text in submit button -->
+	<div th:fragment="fondFields(submitCaption)">
+		<div th:if="${#fields.hasAnyErrors()}">
+			<ul>
+				<li th:each="fieldErr : ${#fields.allErrors()}"
+					th:text="${fieldErr}">Error</li>
+			</ul>
+		</div>
+
+		<div>
+			<label for="fondName">Name</label> <input type="text" id="fondName"
+				th:field="*{name}" placeholder="name" /> <label for="fondIsin">Name</label>
+			<input type="text" id="fondIsin" th:field="*{isin}"
+				placeholder="ISIN" />
+		</div>
+		<div>
+			<label for="fondStartDate">Start date</label> <input type="text"
+				id="fondStartDate" th:field="*{startDate}" /> <label
+				for="fondEndDate">End date</label> <input type="text"
+				id="fondEndDate" th:field="*{endDate}" />
+		</div>
+		<div>
+			<label for="fondAmountOfPay">Pay value</label> <input type="text"
+				id="fondAmountOfPay" th:field="*{amountOfPay}" /> <label
+				for="fondFeePct">Fee from pay value [0 - 1]</label> <input
+				type="text" id="fondFeePct" th:field="*{feePct}"
+				placeholder="Fee 0 - 1.0" />
+		</div>
+		<div>
+			<input type="submit" th:value="${submitCaption}" />
+		</div>
+	</div>
+</body>
+
+</html>
