@@ -11,11 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.tondo.myhome.dto.invest.FondDO;
@@ -141,7 +142,34 @@ public class FondController {
 		}
 		
 		FondDO savedFond = this.investmentService.createFond(fond);
-		return "redirect:/investment/" + savedFond.getId();
+		return "redirect:/investment/fond/" + savedFond.getId();
+	}
+	
+	@GetMapping("/{fondId}/delete")
+	public String deleteFondDialog(@PathVariable Long fondId,  Model model, @RequestParam(name = "backUrl", required = false) String backUrl) {
+		
+		FondDO fond = this.investmentService.getFond(fondId);
+		if (fond == null) {
+			return "redirect:/investment/";
+		}
+		
+		model.addAttribute("itemName", fond.getName());
+		
+		model.addAttribute("backUrl", backUrl != null ? backUrl : "/investment/");
+		model.addAttribute("actionUrl", "/investment/fond/" + fondId);
+		// url to redirect, after the operation is executed both successfully and unsuccessfully
+		model.addAttribute("forwardUrl", "/investment/");
+		return "investment/deleteDialog";
+	}
+	
+	@DeleteMapping("/{fondId}")
+	public String deleteFond(@PathVariable Long fondId,  @ModelAttribute("backUrl") String backUrl) {
+		FondDO fond = this.investmentService.getFond(fondId);
+		if (fond == null) {
+			return "redirect:" + (backUrl != null ? backUrl : "/investment/");
+		}
+		this.investmentService.deleteFond(fondId);
+		return "redirect:/investment/";
 	}
 
 }

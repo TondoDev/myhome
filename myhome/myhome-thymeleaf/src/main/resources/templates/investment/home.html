@@ -50,6 +50,7 @@
 						<td th:text="${#temporals.format(fond.startDate, 'dd.MM.yyyy')}"></td>
 						<td><a th:href="@{/investment/fond/{id}(id=${fond.id})}" role="button">Detail</a></td>
 						<td><a th:href="@{/investment/fond/{id}/edit(id=${fond.id})}" role="button">Edit</a></td>
+						<td><a th:href="@{/investment/fond/{id}/delete(id=${fond.id})}" role="button">Delete</a></td>
 					</tr>
 				</tbody>
 			</table>

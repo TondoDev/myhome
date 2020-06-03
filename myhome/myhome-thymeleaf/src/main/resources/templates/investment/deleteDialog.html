@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+	<h1 th:text="'Are you sure you want to delete item &quot;' + ${itemName} + '&quot;'">Are you sure to delete item:</h1>
+	
+	<form th:action="@{${backUrl}}">
+		<input type="submit" value="No" />
+	</form>
+	
+	<form th:action="@{${actionUrl}}" th:method="DELETE">
+		<input type="hidden" name="backUrl" th:value="@{${forwardUrl}}" />
+		<input type="submit" value="Yes" />
+	</form>
+</body>
+</html>

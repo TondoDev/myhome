@@ -73,6 +73,10 @@ public class InvestmentService {
 		fondRepository.save(toUpdate);
 	}
 	
+	public void deleteFond(Long id) {
+		this.fondRepository.delete(id);
+	}
+	
 	public void createFondPayment(FondPaymentDO fondPayment) {
 		Fond parentFond = fondRepository.findOne(fondPayment.getFondId());
 		
