@@ -77,7 +77,7 @@ public class InvestmentService {
 		this.fondRepository.delete(id);
 	}
 	
-	public void createFondPayment(FondPaymentDO fondPayment) {
+	public FondPayment createFondPayment(FondPaymentDO fondPayment) {
 		Fond parentFond = fondRepository.findOne(fondPayment.getFondId());
 		
 		if (parentFond == null) {
@@ -86,7 +86,23 @@ public class InvestmentService {
 		
 		FondPayment paymentToSave = toFondPaymentPersistentObject(fondPayment);
 		paymentToSave.setParentFond(parentFond);
-		fondPaymentRepository.save(paymentToSave);
+		return fondPaymentRepository.save(paymentToSave);
+	}
+	
+	public FondPayment updateFondPayment(Long fondId, FondPaymentDO fondPayment) {
+		FondPayment check = this.fondPaymentRepository.findByParentFondIdAndId(fondId, fondPayment.getId());
+		if(check == null) {
+			//err
+		}
+		
+		FondPayment toUpdate = toFondPaymentPersistentObject(fondPayment);
+		toUpdate.setParentFond(check.getParentFond());
+		return this.fondPaymentRepository.save(toUpdate);
+	}
+	
+	public FondPaymentDO getFondPaymentInFond(Long fondId, Long fondPaymentId) {
+		FondPayment fondPayment = this.fondPaymentRepository.findByParentFondIdAndId(fondId, fondPaymentId);
+		return toFondPaymentDataObject(fondPayment);
 	}
 	
 	public List<FondPaymentDO> getFondPayments(Long fondId) {
@@ -169,6 +185,7 @@ public class InvestmentService {
 	private static FondPaymentDO toFondPaymentDataObject(FondPayment obj) {
 		FondPaymentDO payment = new FondPaymentDO();
 		
+		payment.setId(obj.getId());
 		payment.setFondId(obj.getParentFond().getId());
 		payment.setDateOfPurchase(obj.getDateOfPurchase());
 		payment.setBuyPrice(doubleNullAsZero(obj.getBuyPrice()));
@@ -227,6 +244,7 @@ public class InvestmentService {
 	private static FondPayment toFondPaymentPersistentObject(FondPaymentDO fondPaymentDo) {
 		FondPayment payment = new FondPayment();
 		
+		payment.setId(fondPaymentDo.getId());
 		payment.setDateOfPurchase(fondPaymentDo.getDateOfPurchase());
 		payment.setBuyPrice(fondPaymentDo.getBuyPrice());
 		payment.setFeeAmount(fondPaymentDo.getFee());

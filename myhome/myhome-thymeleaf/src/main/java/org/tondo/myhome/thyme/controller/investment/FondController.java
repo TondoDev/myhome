@@ -23,6 +23,7 @@ import org.tondo.myhome.dto.invest.FondDO;
 import org.tondo.myhome.dto.invest.FondPaymentDO;
 import org.tondo.myhome.dto.invest.FondValueDO;
 import org.tondo.myhome.svc.service.InvestmentService;
+import org.tondo.myhome.thyme.presentation.FormAttributes;
 
 @Controller
 @RequestMapping("/investment/fond")
@@ -69,7 +70,15 @@ public class FondController {
 		fondPayment.setFee(calculatedFee);
 		fondPayment.setBuyPrice(fondDo.getAmountOfPay() - calculatedFee);
 		
+		FormAttributes formAttrib = FormAttributes.builder()
+			.method("post")
+			.action("/investment/fond/" + fondId + "/fondPayment/")
+			.backUrl("/investment/fond/" + fondId)
+			.submitCaption("Createee")
+			.create();
+		
 		model.addAttribute("fondPayment", fondPayment);
+		model.addAttribute("formAttrib", formAttrib);
 		
 		return "investment/formFondPayment";
 	}
@@ -90,6 +99,41 @@ public class FondController {
 		this.investmentService.createFondPayment(fondPayment);
 		
 		return "redirect:/investment/fond/" + fondId;
+	}
+	
+	@GetMapping("/{fondId}/fondPayment/{fondPaymentId}/edit")
+	public String formEditFondPayment(@PathVariable Long fondId, @PathVariable Long fondPaymentId, Model model) {
+		FondPaymentDO fondPayment = this.investmentService.getFondPaymentInFond(fondId, fondPaymentId);
+		if (fondPayment == null) {
+			throw new IllegalStateException("Inconsistent ids for FondPayment");
+		}
+		
+		populateModelEditFondPayment(fondId, fondPaymentId, fondPayment, model);
+		return "investment/formFondPayment";
+	}
+	
+	@PutMapping("/{fondId}/fondPayment/{fondPaymentId}")
+	public String updateFondPayment(@PathVariable Long fondId, @PathVariable Long fondPaymentId,
+			@ModelAttribute("fondPayment") @Valid FondPaymentDO fondPayment, BindingResult bindings, 
+			Model model) {
+		
+		if (bindings.hasErrors()) {
+			populateModelEditFondPayment(fondId, fondPaymentId, fondPayment, model);
+			return "investment/formFondPayment";
+		}
+		this.investmentService.updateFondPayment(fondId, fondPayment);
+		return "redirect:/investment/fond/" + fondId;
+	}
+
+	private void populateModelEditFondPayment(Long fondId, Long fondPaymentId, FondPaymentDO fondPayment, Model model) {
+		FormAttributes formAttrib = FormAttributes.builder()
+				.method("put")
+				.action("/investment/fond/" + fondId + "/fondPayment/" + fondPaymentId)
+				.backUrl("/investment/fond/" + fondId)
+				.submitCaption("Update")
+				.create();
+		model.addAttribute("formAttrib", formAttrib);
+		model.addAttribute("fondPayment", fondPayment);
 	}
 	
 	@RequestMapping("/create")

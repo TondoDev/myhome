@@ -48,7 +48,7 @@
 	<!-- Fond actions -->
 	<div>
 		<a th:href="@{/investment/fond/{id}/edit?backUrl={backUrl}(id=${fond.id},backUrl=${#httpServletRequest.requestURI})}" role="button">Edit</a>
-		<a href="#" role="button">Delete</a>
+		<a th:href="@{/investment/fond/{id}/delete?backUrl={backUrl}(id=${fond.id},backUrl=${#httpServletRequest.requestURI})}" role="button">Delete</a>
 	</div>
 	
 	<div>
@@ -119,6 +119,7 @@
 					<th>Fee</th>
 					<th>Unit price</th>
 					<th>Purchased units</th>
+					<th colspan="2">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -128,6 +129,8 @@
 					<td th:text="${fondPayment.fee}"></td>
 					<td th:text="${fondPayment.unitPrice}"></td>
 					<td th:text="${fondPayment.purchasedUnits}"></td>
+					<td><a th:href="@{/investment/fond/{id}/fondPayment/{fondPaymentId}/edit(id=${fond.id},fondPaymentId=${fondPayment.id})}">Edit</a></td>
+					<td><a href="#">Delete</a></td>
 				</tr>
 			</tbody>
 		</table>

@@ -7,9 +7,9 @@
 <body>
 	<h1>Create a fond payment</h1>
 	
-	<a th:href="@{/investment/fond/{fondId}/(fondId=${fondId})}" >Back</a>
+	<a th:href="@{${formAttrib.backUrl}}" >Back</a>
 	
-	<form method="post" action="#" th:action="@{/investment/fond/{fondId}/fondPayment/(fondId=*{fondId})}" th:object="${fondPayment}">
+	<form th:method="@{${formAttrib.method}}" action="#" th:action="@{${formAttrib.action}}" th:object="${fondPayment}">
 		
 		<div th:if="${#fields.hasAnyErrors()}">
 			<ul>
@@ -17,6 +17,9 @@
 			</ul>
 		</div>
 		<div>
+		
+			<!-- used for updates -->
+			<input th:if="*{id != null}" type="hidden" th:field="*{id}"/>
 			<label for="dateOfPurchase" >Buy Date</label>
 			<input type="text" th:field="*{dateOfPurchase}" />
 			
@@ -30,7 +33,7 @@
 			<input type="text" th:field="*{purchasedUnits}" />
 			
 			<div>
-				<input type="submit" value="Create" />
+				<input type="submit" th:value="${formAttrib.submitCaption}" />
 			</div>
 		</div>
 	</form>

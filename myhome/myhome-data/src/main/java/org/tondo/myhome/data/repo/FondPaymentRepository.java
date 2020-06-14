@@ -27,5 +27,7 @@ public interface FondPaymentRepository extends CrudRepository<FondPayment, Long>
 	List<ShareSummary> getSumOfPaymentsAndFees();
 	
 	FondPayment findTopByParentFondOrderByDateOfPurchaseDescIdDesc(Fond parentFond);
+	
+	FondPayment findByParentFondIdAndId(Long parentFondId, Long id);
 }
 
