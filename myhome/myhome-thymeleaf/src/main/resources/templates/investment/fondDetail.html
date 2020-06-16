@@ -130,7 +130,7 @@
 					<td th:text="${fondPayment.unitPrice}"></td>
 					<td th:text="${fondPayment.purchasedUnits}"></td>
 					<td><a th:href="@{/investment/fond/{id}/fondPayment/{fondPaymentId}/edit(id=${fond.id},fondPaymentId=${fondPayment.id})}">Edit</a></td>
-					<td><a href="#">Delete</a></td>
+					<td><a th:href="@{/investment/fond/{id}/fondPayment/{fondPaymentId}/delete(id=${fond.id},fondPaymentId=${fondPayment.id})}">Delete</a></td>
 				</tr>
 			</tbody>
 		</table>

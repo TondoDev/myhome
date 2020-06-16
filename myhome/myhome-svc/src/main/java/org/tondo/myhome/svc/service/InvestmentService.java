@@ -100,9 +100,13 @@ public class InvestmentService {
 		return this.fondPaymentRepository.save(toUpdate);
 	}
 	
+	public void deleteFondPayment(Long fondPaymentId) {
+		this.fondPaymentRepository.delete(fondPaymentId);
+	}
+	
 	public FondPaymentDO getFondPaymentInFond(Long fondId, Long fondPaymentId) {
 		FondPayment fondPayment = this.fondPaymentRepository.findByParentFondIdAndId(fondId, fondPaymentId);
-		return toFondPaymentDataObject(fondPayment);
+		return fondPayment == null ? null : toFondPaymentDataObject(fondPayment);
 	}
 	
 	public List<FondPaymentDO> getFondPayments(Long fondId) {

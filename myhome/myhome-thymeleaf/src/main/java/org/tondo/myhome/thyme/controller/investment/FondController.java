@@ -124,6 +124,37 @@ public class FondController {
 		this.investmentService.updateFondPayment(fondId, fondPayment);
 		return "redirect:/investment/fond/" + fondId;
 	}
+	
+	@GetMapping("/{fondId}/fondPayment/{fondPaymentId}/delete")
+	public String deleteFondPaymentDialog(@PathVariable Long fondId, @PathVariable Long fondPaymentId,
+			Model model) {
+
+	
+		FondPaymentDO fondPaymentDO = this.investmentService.getFondPaymentInFond(fondId, fondPaymentId);
+		if (fondPaymentDO == null) {
+			return "redirect:/investment/";
+		}
+		String url = "/investment/fond/" + fondId;
+		model.addAttribute("itemName", "Payment from '" + fondPaymentDO.getDateOfPurchase() + "'");
+		
+		
+		model.addAttribute("backUrl", url);
+		model.addAttribute("actionUrl", url + "/fondPayment/" + fondPaymentId);
+		// url to redirect, after the operation is executed both successfully and unsuccessfully
+		model.addAttribute("forwardUrl", url);
+		return "investment/deleteDialog";
+	}
+	
+	@DeleteMapping("/{fondId}/fondPayment/{fondPaymentId}")
+	public String deleteFondPayment(@PathVariable Long fondId, @PathVariable Long fondPaymentId) {
+		FondPaymentDO fondPaymentDO = this.investmentService.getFondPaymentInFond(fondId, fondPaymentId);
+		if (fondPaymentDO == null) {
+			return "redirect:/investment/";
+		}
+		
+		this.investmentService.deleteFondPayment(fondPaymentId);
+		return "redirect:/investment/fond/" + fondId;
+	}
 
 	private void populateModelEditFondPayment(Long fondId, Long fondPaymentId, FondPaymentDO fondPayment, Model model) {
 		FormAttributes formAttrib = FormAttributes.builder()
