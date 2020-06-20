@@ -1,6 +1,9 @@
 package org.tondo.myhome.svc.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import org.tondo.myhome.dto.invest.FondPaymentDO;
 import org.tondo.myhome.dto.invest.FondValueDO;
 import org.tondo.myhome.dto.invest.InvestmentBaseDO;
 import org.tondo.myhome.dto.invest.InvestmentDO;
+import org.tondo.myhome.dto.invest.PortfolioSummaryDO;
+
 import static org.tondo.myhome.svc.ServiceUtils.*;
 
 
@@ -135,7 +140,9 @@ public class InvestmentService {
 		} else {
 			fondValue = new FondValueDO();
 		}
-		 
+		
+		fondValue.setFondId(parentFond.getId());
+		fondValue.setFondName(parentFond.getName());
 		
 		double unitPrice = 0.0;
 		if (forPrice != null && forPrice > 0.0) {
@@ -153,7 +160,73 @@ public class InvestmentService {
 			calculateFondValueByUnitPrice(fondValue, unitPrice);
 		}
 		
+		zeroUndefinedProperties(fondValue);
 		return fondValue;
+	}
+
+	private void zeroUndefinedProperties(FondValueDO fondValue) {
+		
+		if (fondValue.getOwnedUnits() == null) {
+			fondValue.setOwnedUnits(0.0);
+		}
+		if (fondValue.getTotalInvest() == null) {
+			fondValue.setTotalInvest(0.0);
+		}
+		if (fondValue.getProfit() == null) {
+			fondValue.setProfit(0.0);
+		}
+		if (fondValue.getActualFondProfit() == null) {
+			fondValue.setActualFondProfit(0.0);
+		}
+		if (fondValue.getTotalBuyPrice() == null) {
+			fondValue.setTotalBuyPrice(0.0);
+		}
+		if (fondValue.getTotalFees() == null) {
+			fondValue.setTotalFees(0.0);
+		}
+		if(fondValue.getTotalFondValue() == null) {
+			fondValue.setTotalFondValue(0.0);
+		}
+	}
+	
+	public PortfolioSummaryDO calculateFondsPortfolioSummary(List<FondDO> fondPortfolio, Map<Long, Double> prices) {
+		double totalInvested = 0.0;
+		double totalFees = 0.0;
+		double totalBuyPrice = 0.0;
+		double totalFondProfit = 0.0;
+		double totalCleanProfit = 0.0;
+		double totalFondValue = 0.0;
+		
+		Map<Long, Double> pricesMap = prices == null ? new HashMap<>() : prices;
+		List<FondValueDO> fondValues = new ArrayList<>();
+		for (FondDO fond : fondPortfolio) {
+			Double fondPrice = pricesMap.get(fond.getId());
+			// TODO try to load fund price from service
+			FondValueDO fondValue = this.calculateFondValue(fond.getId(), fondPrice);
+			if (fondValue.getTotalInvest() != null) totalInvested += fondValue.getTotalInvest();
+			if (fondValue.getTotalBuyPrice() != null) totalBuyPrice += fondValue.getTotalBuyPrice();
+			if (fondValue.getTotalFees() != null) totalFees += fondValue.getTotalFees();
+			if (fondValue.getTotalFondValue() != null) totalFondValue += fondValue.getTotalFondValue();
+			if (fondValue.getActualFondProfit() != null) totalFondProfit += fondValue.getActualFondProfit();
+			if (fondValue.getProfit() != null) totalCleanProfit += fondValue.getProfit();
+			
+			fondValues.add(fondValue);
+		}
+		
+		PortfolioSummaryDO summary = new PortfolioSummaryDO();
+		summary.setFonds(fondValues);
+		FondValueDO sumFooter = new FondValueDO();
+		sumFooter.setTotalInvest(totalInvested);
+		sumFooter.setTotalBuyPrice(totalBuyPrice);
+		sumFooter.setTotalFees(totalFees);
+		sumFooter.setActualFondProfit(totalFondProfit);
+		sumFooter.setProfit(totalCleanProfit);
+		sumFooter.setTotalFondValue(totalFondValue);
+		
+		summary.setTotal(sumFooter);
+		
+		
+		return summary;
 		
 	}
 	

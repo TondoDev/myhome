@@ -1,7 +1,11 @@
 package org.tondo.myhome.dto.invest;
 
 public class FondValueDO {
-
+	
+	// technical fond identificator
+	private Long fondId;
+	// human readable fond identification
+	private String fondName;
 	// sum of all fees
 	private Double totalFees;
 	// sum of all many used to buy fond units
@@ -20,6 +24,23 @@ public class FondValueDO {
 	private Double actualFondProfit;
 	// current unit price against are these numbers calculated
 	private Double unitPrice;
+	
+	
+	public Long getFondId() {
+		return fondId;
+	}
+	
+	public void setFondId(Long fondId) {
+		this.fondId = fondId;
+	}
+	
+	public String getFondName() {
+		return fondName;
+	}
+	
+	public void setFondName(String fondName) {
+		this.fondName = fondName;
+	}
 	
 	public Double getTotalFees() {
 		return totalFees;

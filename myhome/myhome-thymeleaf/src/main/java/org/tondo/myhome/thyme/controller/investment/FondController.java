@@ -246,5 +246,4 @@ public class FondController {
 		this.investmentService.deleteFond(fondId);
 		return "redirect:/investment/";
 	}
-
 }

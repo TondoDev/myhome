@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Portfolio summary</title>
+	</head>
+	<body>
+		<h1>Portfolio summary</h1>
+		<div>
+			<a th:href="@{/investment/}">Back</a>
+		</div>
+		<div>
+			<form th:action="@{/investment/summary}">
+				<table>
+					<thead>
+						<tr>
+							<td>Fond</td>
+							<td>Unit price</td>
+							<td>Invested</td>
+							<td>Buy price</td>
+							<td>Fond value</td>
+							<td>Fond profit</td>
+							<td>Fees</td>
+							<td>Clean profit</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="fond : ${portfolioSummary.fonds}">
+						<td><a th:href="@{/investment/fond/{id}(id=${fond.fondId})}" th:text="${fond.fondName}"></a></td>
+						<td><input type="text" th:value="${fond.unitPrice}" th:name="${'fond_' + fond.fondId}"/></td>
+						<td th:text="${fond.totalInvest}"></td>
+						<td th:text="${fond.totalBuyPrice}"></td>
+						<td th:text="${fond.totalFondValue}"></td>
+						<td th:text="${fond.actualFondProfit}"></td>
+						<td th:text="${fond.totalFees}"></td>
+						<td th:text="${fond.profit}"></td>
+					</tr>
+					</tbody>
+					<tfoot>
+						<tr th:object="${portfolioSummary.total}">
+							<td></td>
+							<td></td>
+							<td th:text="*{totalInvest}"></td>
+							<td th:text="*{totalBuyPrice}"></td>
+							<td th:text="*{totalFondValue}"></td>
+							<td th:text="*{actualFondProfit}"></td>
+							<td th:text="*{totalFees}"></td>
+							<td th:text="*{profit}"></td>
+						</tr>
+					</tfoot>
+				</table>
+				<input type="submit" value="Odoslat"/>
+			</form>
+		</div>
+	</body>
+</html>
