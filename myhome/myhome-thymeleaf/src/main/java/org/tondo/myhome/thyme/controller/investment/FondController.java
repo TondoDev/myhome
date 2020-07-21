@@ -28,7 +28,7 @@ import org.tondo.myhome.thyme.presentation.FormAttributes;
 @Controller
 @RequestMapping("/investment/fond")
 public class FondController {
-	// https://www.csob.sk/delegate/getMutualFundDetails?ID=CSOB00000013
+	
 	
 	private InvestmentService investmentService;
 	

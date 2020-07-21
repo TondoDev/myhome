@@ -3,7 +3,6 @@ package org.tondo.myhome.thyme.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.tondo.myhome.dto.invest.FondDO;
 import org.tondo.myhome.dto.invest.PortfolioSummaryDO;
+import org.tondo.myhome.svc.service.FondPriceProviderCSOB;
 import org.tondo.myhome.svc.service.InvestmentService;
 
 @Controller
@@ -20,6 +20,9 @@ import org.tondo.myhome.svc.service.InvestmentService;
 public class InvestmentController {
 
 	private InvestmentService investmentService;
+	
+	@Autowired
+	private FondPriceProviderCSOB fondPriceService;
 	
 	@Autowired
 	public void setInvestmentService(InvestmentService investmentService) {

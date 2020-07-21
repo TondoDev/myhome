@@ -1,5 +1,6 @@
 package org.tondo.myhome.svc.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.tondo.myhome.dto.invest.FondValueDO;
 import org.tondo.myhome.dto.invest.InvestmentBaseDO;
 import org.tondo.myhome.dto.invest.InvestmentDO;
 import org.tondo.myhome.dto.invest.PortfolioSummaryDO;
+import org.tondo.myhome.svc.data.Price;
 
 import static org.tondo.myhome.svc.ServiceUtils.*;
 
@@ -31,6 +33,8 @@ public class InvestmentService {
 	private InvestmentRepository investmentRepository;
 	private FondRepository fondRepository;
 	private FondPaymentRepository fondPaymentRepository;
+	
+	private FondPriceService fondPriceService;
 	
 	@Autowired
 	public void setFondRepository(FondRepository fondRepository) {
@@ -45,6 +49,11 @@ public class InvestmentService {
 	@Autowired
 	public void setFondPaymentRepository(FondPaymentRepository fondPaymentRepository) {
 		this.fondPaymentRepository = fondPaymentRepository;
+	}
+	
+	@Autowired
+	public void setFondPriceService(FondPriceService service) {
+		this.fondPriceService = service;
 	}
 	
 	
@@ -146,13 +155,19 @@ public class InvestmentService {
 		
 		double unitPrice = 0.0;
 		if (forPrice != null && forPrice > 0.0) {
-			// if unit prices came from outside, we use it
+			// if unit prices came from outside, we use it - highest priority
 			unitPrice = forPrice;
-		} else {
-			// used unit price calculated from last purchase
-			FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
-			if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
-				unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
+		} 
+		else {
+			Price currentPrice =  this.fondPriceService.getFondPrice(toFondDataObject(parentFond), LocalDate.now());
+			if (currentPrice != null) {
+				unitPrice = currentPrice.getPrice();
+			} else {
+				// used unit price calculated from last purchase
+				FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
+				if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
+					unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
+				}
 			}
 		}
 		
