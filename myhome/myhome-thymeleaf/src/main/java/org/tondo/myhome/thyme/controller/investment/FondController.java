@@ -39,20 +39,25 @@ public class FondController {
 	}
 	
 	@RequestMapping("/{fondId}")
-	public String fondDetail(@PathVariable Long fondId,  @RequestParam(name = "enteredUnitValue", required = false) Double enteredUnitValue, Model model) {
+	public String fondDetail(@PathVariable Long fondId,  
+			@RequestParam(name = "enteredUnitValue", required = false) Double enteredUnitValue,
+			@RequestParam(name = "valueDate", required = false) LocalDate valueDate,
+			Model model) {
 		
-		
+
 		if (enteredUnitValue != null && enteredUnitValue > 0.0) {
+			// price has priority over date, if both were entered process only price
+			valueDate = null;
 			model.addAttribute("enteredUnitValue", enteredUnitValue);
 		}
-		System.out.println("Unit value: " + enteredUnitValue);
+		
 		FondDO fondDo = this.investmentService.getFond(fondId);
 		model.addAttribute("fond", fondDo);
 		
 		List<FondPaymentDO> payments = this.investmentService.getFondPayments(fondId);
 		model.addAttribute("fondPayments", payments);
 		
-		FondValueDO fondValue = this.investmentService.calculateFondValue(fondId, enteredUnitValue);
+		FondValueDO fondValue = this.investmentService.calculateFondValue(fondId, enteredUnitValue, valueDate);
 		model.addAttribute("fondValue", fondValue);
 		
 		return "investment/fondDetail";

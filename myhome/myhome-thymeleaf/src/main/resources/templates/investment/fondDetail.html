@@ -59,11 +59,10 @@
 				<label for="enteredUnitValue">Unit Value</label>
 				<input type="text" id="enteredUnitValue" name="enteredUnitValue" th:value="${enteredUnitValue}"/>
 				
-				<label for="toDate">To date</label>
-				<input type="text" id="toDate" />
+				<label for="valueDate">Value date</label>
+				<input type="text" id="valueDate" name="valueDate" th:value="${valueDate}"/>
 				
 				<input type="submit" value="Recalculate" />
-				<input type="button" value="Load price" />
 			</form>
 		</div>
 			
@@ -72,6 +71,9 @@
 			<div>
 				<label for="forUnitPrice">For unit price</label>
 				<input type="text" id="forUnitPrice" name="unitPrice" th:value="*{unitPrice}" value="13" readonly="readonly"/>
+				
+				<label for="valueDate">Value date</label>
+				<input type="text" id="valueDate" name="valueDate" th:value="*{{valueDate}}" value="13" readonly="readonly"/>
 				
 				<label for="fondOwnedUnits">Owned units</label>
 				<input type="text" id="fondOwnedUnits" name="ownedUnits" th:value="*{ownedUnits}" value="17" readonly="readonly"/>

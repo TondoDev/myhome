@@ -1,5 +1,7 @@
 package org.tondo.myhome.dto.invest;
 
+import java.time.LocalDate;
+
 public class FondValueDO {
 	
 	// technical fond identificator
@@ -8,7 +10,7 @@ public class FondValueDO {
 	private String fondName;
 	// sum of all fees
 	private Double totalFees;
-	// sum of all many used to buy fond units
+	// sum of all money used to buy fond units
 	private Double totalBuyPrice;
 	// sum of all money which investor used for investing into this fond
 	private Double totalInvest;
@@ -24,6 +26,8 @@ public class FondValueDO {
 	private Double actualFondProfit;
 	// current unit price against are these numbers calculated
 	private Double unitPrice;
+	// date to which is unitPrice valid
+	private LocalDate valueDate;
 	
 	
 	public Long getFondId() {
@@ -103,5 +107,13 @@ public class FondValueDO {
 	
 	public void setTotalInvest(Double totalInvest) {
 		this.totalInvest = totalInvest;
+	}
+	
+	public LocalDate getValueDate() {
+		return valueDate;
+	}
+	
+	public void setValueDate(LocalDate valueDate) {
+		this.valueDate = valueDate;
 	}
 }

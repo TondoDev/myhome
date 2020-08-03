@@ -1,5 +1,6 @@
 package org.tondo.myhome.thyme.controller;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +40,13 @@ public class InvestmentController {
 	}
 	
 	@GetMapping("/summary")
-	public String investmentSummary(Model model, @RequestParam Map<String,String> allParams) {
+	public String investmentSummary(Model model, 
+			@RequestParam(name = "valueDate", required = false) LocalDate valueDate,
+			@RequestParam Map<String,String> allParams) {
 		List<FondDO> fonds = this.investmentService.getFonds();
-		Map<Long, Double> prices = createFondPriceMap(allParams);
-		PortfolioSummaryDO portfolioSummary = this.investmentService.calculateFondsPortfolioSummary(fonds, prices);
+		// value date has a priority over prices
+		Map<Long, Double> prices = valueDate == null ? createFondPriceMap(allParams) : new HashMap<>();
+		PortfolioSummaryDO portfolioSummary = this.investmentService.calculateFondsPortfolioSummary(fonds, prices, valueDate);
 		
 		model.addAttribute("portfolioSummary", portfolioSummary);
 		return "investment/summary";

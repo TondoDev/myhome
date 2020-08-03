@@ -39,7 +39,8 @@ public class FondPriceService {
 		// TODO implement locking
 		if (entry.callForUpdate(forDate)) {
 			List<Price> downloaded = this.fondPriceProvider.getPrices(fond.getIsin());
-			List<Price> filtered = downloaded.stream().filter(p -> !p.getDate().isBefore(fond.getStartDate())).collect(Collectors.toList());
+			LocalDate minDate = forDate != null && forDate.isBefore(fond.getStartDate()) ? forDate : fond.getStartDate();
+			List<Price> filtered = downloaded.stream().filter(p -> !p.getDate().isBefore(minDate)).collect(Collectors.toList());
 			entry.addEntries(filtered);
 		}
 		

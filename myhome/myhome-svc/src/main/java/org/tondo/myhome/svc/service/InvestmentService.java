@@ -134,7 +134,7 @@ public class InvestmentService {
 		return iterableToDataObjectList(paymentsData, InvestmentService::toFondPaymentDataObject);
 	}
 	
-	public FondValueDO calculateFondValue(Long fondId, Double forPrice) {
+	public FondValueDO calculateFondValue(Long fondId, Double forPrice, LocalDate valueDate) {
 		Fond parentFond = fondRepository.findOne(fondId);
 		
 		if (parentFond == null) {
@@ -153,20 +153,25 @@ public class InvestmentService {
 		fondValue.setFondId(parentFond.getId());
 		fondValue.setFondName(parentFond.getName());
 		
+		// this means when price was entered, the valueDate is ignored
 		double unitPrice = 0.0;
 		if (forPrice != null && forPrice > 0.0) {
 			// if unit prices came from outside, we use it - highest priority
 			unitPrice = forPrice;
+			// when unit price is entered manually, value date is unimportant
 		} 
 		else {
-			Price currentPrice =  this.fondPriceService.getFondPrice(toFondDataObject(parentFond), LocalDate.now());
+			LocalDate priceDate = valueDate != null ? valueDate : LocalDate.now();
+			Price currentPrice =  this.fondPriceService.getFondPrice(toFondDataObject(parentFond), priceDate);
 			if (currentPrice != null) {
 				unitPrice = currentPrice.getPrice();
+				fondValue.setValueDate(currentPrice.getDate());
 			} else {
 				// used unit price calculated from last purchase
 				FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
 				if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
 					unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
+					fondValue.setValueDate(lastPayment.getDateOfPurchase());
 				}
 			}
 		}
@@ -204,7 +209,7 @@ public class InvestmentService {
 		}
 	}
 	
-	public PortfolioSummaryDO calculateFondsPortfolioSummary(List<FondDO> fondPortfolio, Map<Long, Double> prices) {
+	public PortfolioSummaryDO calculateFondsPortfolioSummary(List<FondDO> fondPortfolio, Map<Long, Double> prices, LocalDate valueDate) {
 		double totalInvested = 0.0;
 		double totalFees = 0.0;
 		double totalBuyPrice = 0.0;
@@ -216,8 +221,8 @@ public class InvestmentService {
 		List<FondValueDO> fondValues = new ArrayList<>();
 		for (FondDO fond : fondPortfolio) {
 			Double fondPrice = pricesMap.get(fond.getId());
-			// TODO try to load fund price from service
-			FondValueDO fondValue = this.calculateFondValue(fond.getId(), fondPrice);
+			// when fond price is not provided, it tries to retrieve it from external service
+			FondValueDO fondValue = this.calculateFondValue(fond.getId(), fondPrice, valueDate); // TODO gui field for this value must be created
 			if (fondValue.getTotalInvest() != null) totalInvested += fondValue.getTotalInvest();
 			if (fondValue.getTotalBuyPrice() != null) totalBuyPrice += fondValue.getTotalBuyPrice();
 			if (fondValue.getTotalFees() != null) totalFees += fondValue.getTotalFees();

@@ -11,10 +11,15 @@
 		</div>
 		<div>
 			<form th:action="@{/investment/summary}">
+				<div>
+					<label for="valueDate">Value date</label>
+					<input type="text" id="valueDate" name="valueDate"/>
+				</div>
 				<table>
 					<thead>
 						<tr>
 							<td>Fond</td>
+							<td>Price date</td>
 							<td>Unit price</td>
 							<td>Invested</td>
 							<td>Buy price</td>
@@ -27,6 +32,7 @@
 					<tbody>
 						<tr th:each="fond : ${portfolioSummary.fonds}">
 						<td><a th:href="@{/investment/fond/{id}(id=${fond.fondId})}" th:text="${fond.fondName}"></a></td>
+						<td th:text="${{fond.valueDate}}"></td>
 						<td><input type="text" th:value="${fond.unitPrice}" th:name="${'fond_' + fond.fondId}"/></td>
 						<td th:text="${fond.totalInvest}"></td>
 						<td th:text="${fond.totalBuyPrice}"></td>
@@ -38,6 +44,7 @@
 					</tbody>
 					<tfoot>
 						<tr th:object="${portfolioSummary.total}">
+							<td></td>
 							<td></td>
 							<td></td>
 							<td th:text="*{totalInvest}"></td>

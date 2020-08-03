@@ -15,7 +15,7 @@ import org.tondo.myhome.svc.service.FondPriceProviderCSOB;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes= {FondPriceProviderCSOB.class, MyHomeSvcConfig.class})
-@TestPropertySource(properties = {"csob.url=xxx"})
+@TestPropertySource(properties = {"csob.url=https://www.csob.sk/delegate/getMutualFundDetails"})
 public class ExternalSvcCallTest {
 
 	@Autowired
@@ -37,7 +37,6 @@ public class ExternalSvcCallTest {
 		System.out.println(foo);
 	}
 	
-		 
 	@Test
 	public void testCallSvc() {
 		String url = this.foo + "?ID=CSOB00000013";
