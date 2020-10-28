@@ -60,7 +60,7 @@
 				<input type="text" id="enteredUnitValue" name="enteredUnitValue" th:value="${enteredUnitValue}"/>
 				
 				<label for="valueDate">Value date</label>
-				<input type="text" id="valueDate" name="valueDate" th:value="${valueDate}"/>
+				<input type="text" id="valueDateIn" name="valueDateIn" th:value="${valueDate}"/>
 				
 				<input type="submit" value="Recalculate" />
 			</form>
@@ -98,7 +98,7 @@
 				<input type="text" id="fondCleanProfit" name="profit" th:value="*{profit}" value="16" readonly="readonly"/>
 				
 				<label for="fondProfit">Fond profit</label>
-				<input type="text" id="fondProfit" name="actualFondProfit" th:value="*{actualFondProfit}" value="16" readonly="readonly"/>
+				<input type="text" id="fondProfit" name="actualFondProfit" th:value="*{{actualFondProfit}}" value="16" readonly="readonly"/>
 			</div>
 			
 		</div>

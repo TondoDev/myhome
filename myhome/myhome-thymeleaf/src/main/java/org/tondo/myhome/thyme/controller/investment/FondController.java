@@ -64,26 +64,10 @@ public class FondController {
 	}
 	
 	@RequestMapping("/{fondId}/createPayment")
-	public String formCreateFondPayment(@PathVariable Long fondId, Model model) {
+	public String formCreateFondPayment(@PathVariable Long fondId, Model model) {		
+		FondPaymentDO fondPayment = this.investmentService.initFondPayment(fondId);
 		
-		FondPaymentDO fondPayment = new FondPaymentDO();
-		fondPayment.setFondId(fondId);
-		fondPayment.setDateOfPurchase(LocalDate.now());
-		
-		FondDO fondDo = this.investmentService.getFond(fondId);
-		double calculatedFee = fondDo.getAmountOfPay() * fondDo.getFeePct();
-		fondPayment.setFee(calculatedFee);
-		fondPayment.setBuyPrice(fondDo.getAmountOfPay() - calculatedFee);
-		
-		FormAttributes formAttrib = FormAttributes.builder()
-			.method("post")
-			.action("/investment/fond/" + fondId + "/fondPayment/")
-			.backUrl("/investment/fond/" + fondId)
-			.submitCaption("Createee")
-			.create();
-		
-		model.addAttribute("fondPayment", fondPayment);
-		model.addAttribute("formAttrib", formAttrib);
+		populateModelCreateFondPayment(fondPayment, model);
 		
 		return "investment/formFondPayment";
 	}
@@ -97,6 +81,7 @@ public class FondController {
 			model.addAttribute("fondPayment", fondPayment);
 			// this is the error code, which will be resolved in localization resources
 			// bindings.reject("Some additional error");
+			populateModelCreateFondPayment(fondPayment, model);
 			bindings.addError(new ObjectError("fondPayment", "Some global error!"));
 			return "investment/formFondPayment";
 		}
@@ -170,6 +155,18 @@ public class FondController {
 				.create();
 		model.addAttribute("formAttrib", formAttrib);
 		model.addAttribute("fondPayment", fondPayment);
+	}
+	
+	private void populateModelCreateFondPayment(FondPaymentDO fondPayment, Model model) {
+		FormAttributes formAttrib = FormAttributes.builder()
+				.method("post")
+				.action("/investment/fond/" + fondPayment.getFondId() + "/fondPayment/")
+				.backUrl("/investment/fond/" + fondPayment.getFondId())
+				.submitCaption("Createee")
+				.create();
+			
+			model.addAttribute("fondPayment", fondPayment);
+			model.addAttribute("formAttrib", formAttrib);
 	}
 	
 	@RequestMapping("/create")

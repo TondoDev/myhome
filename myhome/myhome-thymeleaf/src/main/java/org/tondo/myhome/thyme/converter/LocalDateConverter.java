@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * For display in Thymeleaf templates
+ * For parsing text from thymeleaf templates
  * @author TondoDev
  *
  */

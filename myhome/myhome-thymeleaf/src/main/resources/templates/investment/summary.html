@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Portfolio summary</title>
+		<script type="text/javascript" src="/functions.js"></script>
 	</head>
 	<body>
 		<h1>Portfolio summary</h1>
@@ -14,6 +15,8 @@
 				<div>
 					<label for="valueDate">Value date</label>
 					<input type="text" id="valueDate" name="valueDate"/>
+					<!-- type button becuse otherwise it will submit the form and we don't want it -->
+					<button type="button" onclick="clearPrices()">Clear price</button>
 				</div>
 				<table>
 					<thead>
@@ -34,12 +37,13 @@
 						<td><a th:href="@{/investment/fond/{id}(id=${fond.fondId})}" th:text="${fond.fondName}"></a></td>
 						<td th:text="${{fond.valueDate}}"></td>
 						<td><input type="text" th:value="${fond.unitPrice}" th:name="${'fond_' + fond.fondId}"/></td>
-						<td th:text="${fond.totalInvest}"></td>
-						<td th:text="${fond.totalBuyPrice}"></td>
-						<td th:text="${fond.totalFondValue}"></td>
-						<td th:text="${fond.actualFondProfit}"></td>
-						<td th:text="${fond.totalFees}"></td>
-						<td th:text="${fond.profit}"></td>
+						<td th:text="${{fond.totalInvest}}"></td>
+						<td th:text="${{fond.totalBuyPrice}}"></td>
+						<!-- td th:text="${fond.totalFondValue}"></td  -->
+						<td th:text="${#numbers.formatDecimal(fond.totalFondValue, 1, 2,'POINT')}"></td>
+						<td th:text="${{fond.actualFondProfit}}"></td>
+						<td th:text="${{fond.totalFees}}"></td>
+						<td th:text="${{fond.profit}}"></td>
 					</tr>
 					</tbody>
 					<tfoot>

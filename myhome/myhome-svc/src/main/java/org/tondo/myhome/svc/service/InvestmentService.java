@@ -91,6 +91,29 @@ public class InvestmentService {
 		this.fondRepository.delete(id);
 	}
 	
+	public FondPaymentDO initFondPayment(Long fondId) {
+		FondPaymentDO fondPayment = new FondPaymentDO();
+		fondPayment.setFondId(fondId);
+		
+		
+		FondDO fondDo = this.getFond(fondId);
+		double calculatedFee = fondDo.getAmountOfPay() * fondDo.getFeePct();
+		fondPayment.setFee(calculatedFee);
+		
+		double buyPrice = fondDo.getAmountOfPay() - calculatedFee;
+		fondPayment.setBuyPrice(buyPrice);
+		
+		LocalDate dateOfPurchase =  LocalDate.now();
+		fondPayment.setDateOfPurchase(dateOfPurchase);
+		Price price = this.fondPriceService.getFondPrice(fondDo, dateOfPurchase);
+		
+		if (price != null) {
+			fondPayment.setPurchasedUnits(buyPrice / price.getPrice());
+		}
+		
+		return fondPayment;
+	}
+	
 	public FondPayment createFondPayment(FondPaymentDO fondPayment) {
 		Fond parentFond = fondRepository.findOne(fondPayment.getFondId());
 		
@@ -141,7 +164,7 @@ public class InvestmentService {
 			// throw error
 		}
 		
-		ShareSummary summary = this.fondPaymentRepository.getSumOfPaymentsAndFees(parentFond);
+		ShareSummary summary = this.fondPaymentRepository.getSumOfPaymentsAndFees(parentFond, valueDate);
 		
 		FondValueDO fondValue;
 		if (summary != null) {
@@ -167,8 +190,9 @@ public class InvestmentService {
 				unitPrice = currentPrice.getPrice();
 				fondValue.setValueDate(currentPrice.getDate());
 			} else {
-				// used unit price calculated from last purchase
-				FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(parentFond);
+				// used when online price is not available
+				// used unit price calculated from last purchase lower than price date
+				FondPayment lastPayment = this.fondPaymentRepository.findTopByParentFondAndDateOfPurchaseLessThanEqualOrderByDateOfPurchaseDescIdDesc(parentFond, priceDate);
 				if (lastPayment != null && lastPayment.getPurchasedUnits() != null && !isZero(lastPayment.getPurchasedUnits())) {
 					unitPrice = lastPayment.getBuyPrice()/lastPayment.getPurchasedUnits();
 					fondValue.setValueDate(lastPayment.getDateOfPurchase());
@@ -263,10 +287,10 @@ public class InvestmentService {
 		}
 		
 		fondValue.setUnitPrice(unitPrice);
-		fondValue.setTotalFondValue(unitPrice * fondValue.getOwnedUnits());
-		fondValue.setTotalInvest(fondValue.getTotalFees() + fondValue.getTotalBuyPrice());
-		fondValue.setActualFondProfit(fondValue.getTotalFondValue() -  fondValue.getTotalBuyPrice());
-		fondValue.setProfit(fondValue.getTotalFondValue() - fondValue.getTotalInvest());
+		fondValue.setTotalFondValue(unitPrice * doubleNullAsZero(fondValue.getOwnedUnits()));
+		fondValue.setTotalInvest(doubleNullAsZero(fondValue.getTotalFees()) + doubleNullAsZero(fondValue.getTotalBuyPrice()));
+		fondValue.setActualFondProfit(doubleNullAsZero(fondValue.getTotalFondValue()) -  doubleNullAsZero(fondValue.getTotalBuyPrice()));
+		fondValue.setProfit(doubleNullAsZero(fondValue.getTotalFondValue()) - doubleNullAsZero(fondValue.getTotalInvest()));
 	}
 	
 	private static FondValueDO toFondValueDataObject(ShareSummary summary) {

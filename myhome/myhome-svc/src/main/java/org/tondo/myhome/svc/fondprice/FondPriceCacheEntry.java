@@ -3,6 +3,7 @@ package org.tondo.myhome.svc.fondprice;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.tondo.myhome.svc.data.Price;
@@ -49,7 +50,9 @@ public class FondPriceCacheEntry {
 			this.pastestSearchedDate = priceDate;
 		}
 		
-		return this.entries.isEmpty() ? null : this.entries.floorEntry(priceDate).getValue();
+		return this.entries.isEmpty() ? null 
+				// handling when  available are dates only after give priceDate
+				: Optional.ofNullable(this.entries.floorEntry(priceDate)).map(price -> price.getValue()).orElse(null);
 	}
 	
 	

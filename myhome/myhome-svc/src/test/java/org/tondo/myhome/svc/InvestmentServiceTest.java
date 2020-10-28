@@ -2,7 +2,9 @@ package org.tondo.myhome.svc;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Test;
@@ -44,6 +46,24 @@ public class InvestmentServiceTest {
 		Fond a = new Fond();
 		SavingAccount b = new SavingAccount();
 		return Arrays.asList(a, b);
+	}
+	
+	
+	@Test
+	public void testComparator() {
+		List<String> list = new ArrayList<String>(Arrays.asList("1", "5", "2", "7", "4", "6", "8", "4"));
+		
+		list.sort(new PicaComp());
+		System.out.println(list);
+	}
+	
+	private static class PicaComp implements Comparator<String> {
+
+		@Override
+		public int compare(String o1, String o2) {
+			return Integer.parseInt(o1) - Integer.parseInt(o2);
+		}
+		
 	}
 	
 }

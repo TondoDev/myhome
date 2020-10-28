@@ -173,7 +173,7 @@ public class InvestnetDataLayerTest {
 		fondRepository.save(fond);
 		assertNotNull("Fond saved, id determined", fond.getId());
 		
-		ShareSummary summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
+		ShareSummary summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond, null);
 		assertNull("For empty payment list, fees are returned as null", summary);
 		
 		FondPayment lastPaymentFromEmptyFond = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(fond);
@@ -187,7 +187,7 @@ public class InvestnetDataLayerTest {
 		payment.setDateOfPurchase(payment.getDateOfPurchase().plusDays(1));
 		fondPaymentRepository.save(payment);
 		
-		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
+		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond, null);
 		assertEquals("sum of fees for single payment", 3.0, summary.getTotalFees(), 0.001);
 		assertEquals("sum of owned values", 10.0, summary.getOwnedUnitsCount(), 0.001);
 		
@@ -198,12 +198,12 @@ public class InvestnetDataLayerTest {
 		anotherPayment.setDateOfPurchase(anotherPayment.getDateOfPurchase().plusDays(2));
 		fondPaymentRepository.save(anotherPayment);
 		
-		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond);
+		summary = fondPaymentRepository.getSumOfPaymentsAndFees(fond, null);
 		assertEquals("sum of fees for two payments", 6.0, summary.getTotalFees(), 0.001);
 		assertEquals("sum of owned values", 15.0, summary.getOwnedUnitsCount(), 0.001);
 		
 		
-		FondPayment lastPayment = fondPaymentRepository.findTopByParentFondOrderByDateOfPurchaseDescIdDesc(fond);
+		FondPayment lastPayment = fondPaymentRepository.findTopByParentFondAndDateOfPurchaseLessThanEqualOrderByDateOfPurchaseDescIdDesc(fond, LocalDate.now().plusDays(2));
 		assertNotNull(lastPayment);
 		assertEquals(5d, lastPayment.getPurchasedUnits(), 0.001);
 	}
@@ -220,7 +220,7 @@ public class InvestnetDataLayerTest {
 		List<ShareSummary> summary = fondPaymentRepository.getSumOfPaymentsAndFees();
 		System.out.println(summary);
 
-		System.out.println(fondPaymentRepository.getSumOfPaymentsAndFees(first));
+		System.out.println(fondPaymentRepository.getSumOfPaymentsAndFees(first, null));
 	}
 	
 	
