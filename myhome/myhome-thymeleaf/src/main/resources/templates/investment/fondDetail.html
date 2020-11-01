@@ -129,7 +129,7 @@
 					<td th:text="${{fondPayment.dateOfPurchase}}">11.1.2020</td>
 					<td th:text="${fondPayment.buyPrice}"></td>
 					<td th:text="${fondPayment.fee}"></td>
-					<td th:text="${fondPayment.unitPrice}"></td>
+					<td th:text="${{fondPayment.unitPrice}}"></td>
 					<td th:text="${fondPayment.purchasedUnits}"></td>
 					<td><a th:href="@{/investment/fond/{id}/fondPayment/{fondPaymentId}/edit(id=${fond.id},fondPaymentId=${fondPayment.id})}">Edit</a></td>
 					<td><a th:href="@{/investment/fond/{id}/fondPayment/{fondPaymentId}/delete(id=${fond.id},fondPaymentId=${fondPayment.id})}">Delete</a></td>

@@ -1,51 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8" />
-<title>Create Payment</title>
-</head>
-<body>
-	<h1>Create a fond payment</h1>
-	
-	<a th:href="@{${formAttrib.backUrl}}" >Back</a>
-	
-	<form th:method="@{${formAttrib.method}}" action="#" th:action="@{${formAttrib.action}}" th:object="${fondPayment}">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Create Payment</title>
+		<script type="text/javascript" src="/functions.js"></script>
+	</head>
+	<body>
+		<h1>Create a fond payment</h1>
 		
-		<div th:if="${#fields.hasAnyErrors()}">
+		<a th:href="@{${formAttrib.backUrl}}" >Back</a>
+		
+		<form th:method="@{${formAttrib.method}}" action="#" th:action="@{${formAttrib.action}}" th:object="${fondPayment}">
+			
+			<div th:if="${#fields.hasAnyErrors()}">
+				<ul>
+					<li th:each="fieldErr : ${#fields.allErrors()}" th:text="${fieldErr}">Error</li>
+				</ul>
+			</div>
+			<div>
+			
+				<input th:if="*{fondId != null}" type="hidden" th:field="*{fondId}"/>
+				<!-- used for updates -->
+				<input th:if="*{id != null}" type="hidden" th:field="*{id}"/>
+				<label for="dateOfPurchase" >Buy Date</label>
+				<input type="text" th:field="*{dateOfPurchase}" onchange="calculateUnits()" />
+				
+				<label for="buyPrice">Buy price</label>
+				<input type="text" th:field="*{buyPrice}" onchange="calculateUnits()" />
+				
+				<label for="fee">Fee</label>
+				<input type="text" th:field="*{{fee}}" />
+				
+				<label for="purchasedUnits">Purchased units</label>
+				<input type="text" th:field="*{purchasedUnits}" />
+				
+				<div>
+					<input type="submit" th:value="${formAttrib.submitCaption}" />
+				</div>
+			</div>
+		</form>
+		
+	<!-- 	<div th:if="${#fields.hasErrors('${fondPayment.*}')}"> -->
+		<div th:if="${#fields.hasErrors('${fondPayment.*}')}">
 			<ul>
-				<li th:each="fieldErr : ${#fields.allErrors()}" th:text="${fieldErr}">Error</li>
+				<li th:each="fe : ${#fields.detailedErrors()}" th:text="${fe}">y</li>
 			</ul>
 		</div>
-		<div>
 		
-			<!-- used for updates -->
-			<input th:if="*{id != null}" type="hidden" th:field="*{id}"/>
-			<label for="dateOfPurchase" >Buy Date</label>
-			<input type="text" th:field="*{dateOfPurchase}" />
-			
-			<label for="buyPrice">Buy price</label>
-			<input type="text" th:field="*{buyPrice}" />
-			
-			<label for="fee">Fee</label>
-			<input type="text" th:field="*{fee}" />
-			
-			<label for="purchasedUnits">Purchased units</label>
-			<input type="text" th:field="*{purchasedUnits}" />
-			
-			<div>
-				<input type="submit" th:value="${formAttrib.submitCaption}" />
-			</div>
-		</div>
-	</form>
-	
-<!-- 	<div th:if="${#fields.hasErrors('${fondPayment.*}')}"> -->
-	<div th:if="${#fields.hasErrors('${fondPayment.*}')}">
-		<ul>
-			<li th:each="fe : ${#fields.detailedErrors()}" th:text="${fe}">y</li>
-		</ul>
-	</div>
-	
-	
-	
-</body>
+		
+		
+	</body>
 </html>

@@ -51,8 +51,8 @@ public class FondPriceCacheEntry {
 		}
 		
 		return this.entries.isEmpty() ? null 
-				// handling when  available are dates only after give priceDate
-				: Optional.ofNullable(this.entries.floorEntry(priceDate)).map(price -> price.getValue()).orElse(null);
+				// handling when exact date is not available, then return closest price BEFORE searched date
+				: Optional.ofNullable(this.entries.floorEntry(priceDate)).map(entr -> entr.getValue()).orElse(null);
 	}
 	
 	

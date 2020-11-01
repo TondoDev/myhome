@@ -1,6 +1,7 @@
 package org.tondo.myhome.thyme.converter;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import org.springframework.core.convert.converter.Converter;
 
@@ -13,7 +14,10 @@ public class DoubleConverter implements Converter<Double, String> {
 			return null;
 		}
 		
-		return new DecimalFormat("#.###").format(source);
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		
+		return new DecimalFormat("#.###", symbols).format(source);
 	}
 	
 

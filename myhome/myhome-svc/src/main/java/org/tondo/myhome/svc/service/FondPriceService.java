@@ -40,7 +40,12 @@ public class FondPriceService {
 		if (entry.callForUpdate(forDate)) {
 			List<Price> downloaded = this.fondPriceProvider.getPrices(fond.getIsin());
 			LocalDate minDate = forDate != null && forDate.isBefore(fond.getStartDate()) ? forDate : fond.getStartDate();
-			List<Price> filtered = downloaded.stream().filter(p -> !p.getDate().isBefore(minDate)).collect(Collectors.toList());
+			// safe boundary for cases, when first entry after filtering will be entry with date higher than requested date
+			// F.E.: lets search for 1.1.2020 which is before the start of fond tracking, and in price DB there is no entry for this date.
+			// There are entries for 31.12.2019 and 2.1.2020. Filtering will remove entries before 1.1.2020 and then we lost only valid 
+			// entry to the given date
+			LocalDate minDateSafe = minDate.minusMonths(1);
+			List<Price> filtered = downloaded.stream().filter(p -> !p.getDate().isBefore(minDateSafe)).collect(Collectors.toList());
 			entry.addEntries(filtered);
 		}
 		
