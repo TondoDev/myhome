@@ -5,6 +5,7 @@
 		<title th:text="#{page.title}">Expenses</title>
 	</head>
 	<body>
+		<a th:href="@{/dashboard/}">Dashboard</a>
 		<!-- Enclosing with '|' we can concatenate more expression -->
 		<h2 th:text="|#{page.caption} ${#temporals.format(displayDate,'LLLL YYYY')}|"></h2>
 		

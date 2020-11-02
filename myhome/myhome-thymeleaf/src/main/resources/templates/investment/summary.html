@@ -18,7 +18,7 @@
 					<!-- type button becuse otherwise it will submit the form and we don't want it -->
 					<button type="button" onclick="clearPrices()">Clear price</button>
 				</div>
-				<table>
+				<table border="1">
 					<thead>
 						<tr>
 							<td>Fond</td>
@@ -51,12 +51,12 @@
 							<td></td>
 							<td></td>
 							<td></td>
-							<td th:text="*{totalInvest}"></td>
-							<td th:text="*{totalBuyPrice}"></td>
-							<td th:text="*{totalFondValue}"></td>
-							<td th:text="*{actualFondProfit}"></td>
-							<td th:text="*{totalFees}"></td>
-							<td th:text="*{profit}"></td>
+							<td th:text="*{{totalInvest}}"></td>
+							<td th:text="*{{totalBuyPrice}}"></td>
+							<td th:text="*{{totalFondValue}}"></td>
+							<td th:text="*{{actualFondProfit}}"></td>
+							<td th:text="*{{totalFees}}"></td>
+							<td th:text="*{{profit}}"></td>
 						</tr>
 					</tfoot>
 				</table>
