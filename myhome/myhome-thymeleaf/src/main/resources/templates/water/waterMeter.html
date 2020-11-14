@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Water meters</title>
+	</head>
+	<body>
+		<a th:href="@{/dashboard/}">Dashboard</a>
+		
+		<table border="1">
+			<thead>
+				<tr>
+					<td>Number</td>
+					<td>Valid from</td>
+					<td>Valid to</td>
+					<td>Status</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="meter : ${waterMeters}">
+					<td><a th:href="@{/water/meter/{meterId}/usage(meterId=${meter.id})}" th:text="${meter.meterIdentifier}">00000</a></td>
+					<td th:text="${{meter.validFrom}}">1.2.2020</td>
+					<td th:text="${{meter.validTo}}">31.12.2020</td>
+					<td th:text="${meter.active != null and meter.active ? 'Active' : 'Inactive'}"></td>
+					<td><a th:href="@{/water/meter/{meterId}/update(meterId=${meter.id})}">Edit</a></td>
+				</tr>
+			</tbody>
+			
+		</table>
+		
+		<a th:href="@{/water/meter/create}">New meter</a>
+	
+	
+	</body>
+</html>

@@ -6,8 +6,10 @@
 		<title>Water usage</title>
 	</head>	
 	<body>
-	<a th:href="@{/dashboard/}">Dashboard</a>
-	<form th:action="@{/water/}" method="post" th:object="${waterUsage}">
+	<a th:href="@{/water/meter/}">Back</a>
+	
+	<h1 th:text="${waterMeter.meterIdentifier + ' - ' + (waterMeter.active ? 'Active' : 'Inactive')}"></h1>
+	<form th:if="${waterMeter.active}" th:action="@{/water/meter/{meterId}/usage(meterId=${waterMeter.id})}" method="post" th:object="${waterUsage}">
 		<table border="1">
 			<tr>
 				<td><label for="meas">Merane</label></td>

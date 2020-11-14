@@ -8,40 +8,65 @@ import java.util.function.DoubleBinaryOperator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.tondo.myhome.data.domain.WaterMeter;
 import org.tondo.myhome.data.domain.WaterUsage;
+import org.tondo.myhome.data.repo.WaterMeterRepository;
 import org.tondo.myhome.data.repo.WaterUsageRepository;
+import org.tondo.myhome.dto.WaterMeterDO;
 import org.tondo.myhome.dto.WaterUsageDO;
 import org.tondo.myhome.svc.exception.FieldError;
 import org.tondo.myhome.svc.exception.WaterValidationException;
+
+import static org.tondo.myhome.svc.ServiceUtils.*;
 
 @Service
 public class WaterSvc {
 	
 	@Autowired
 	private WaterUsageRepository waterUsageRepository;
+	
+	@Autowired
+	private WaterMeterRepository waterMeterRepository;
 
 	
-	public List<WaterUsageDO> getWagerUsage() {
+	public List<WaterUsageDO> getWagerUsage(Long meterId) {
 		//return iterableToDataObjectList(waterUsageRepository.findAll(), WaterSvc::toDataObject);
+		WaterMeter meter = this.waterMeterRepository.findOne(meterId);
+		if (meter == null) {
+			throw new IllegalStateException("Invalid water meter!");
+		}
 		
-		return calculateDifferences(waterUsageRepository.findAllByOrderByMeasuredDesc());
+		return calculateDifferences(waterUsageRepository.findAllByWaterMeterOrderByMeasuredDesc(meter));
 	}
 	
-	public void addMeasurement(WaterUsageDO usage) {
+	public void addMeasurement(Long meterId, WaterUsageDO usage) {
 		
-		WaterUsage latestWaterusage = waterUsageRepository.findTopByOrderByMeasuredDesc();
+		WaterMeter meter = waterMeterRepository.findOne(meterId);
+		if (meter == null) {
+			throw new IllegalStateException("404 - Not found");
+		} else if (!Boolean.TRUE.equals(meter.isActive())) {
+			throw new IllegalStateException("meter not active");
+		}
 		
+		WaterUsage latestWaterusage = waterUsageRepository.findTopByWaterMeterOrderByMeasuredDesc(meter);
+		WaterUsage waterUsageData = new WaterUsage();
 		if (latestWaterusage!= null) {
 			List<FieldError> error = validateMeasurmentContinuity(usage, toDataObject(latestWaterusage));
 			if (!error.isEmpty()) {
 				throw new WaterValidationException(error);
 			}
+			
+			// update of values, when date is the same as for last entry
+			if (latestWaterusage.getMeasured().equals(usage.getMeasured())) {
+				waterUsageData = latestWaterusage;
+			}
 		}
 		
-		WaterUsage waterUsageData = new WaterUsage();
+		
 		waterUsageData.setColdUsage(usage.getColdUsage());
 		waterUsageData.setWarmUsage(usage.getWarmUsage());
 		waterUsageData.setMeasured(usage.getMeasured());
+		waterUsageData.setWaterMeter(meter);
 		
 		waterUsageRepository.save(waterUsageData);
 	}
@@ -107,5 +132,49 @@ public class WaterSvc {
 		waterUsageDo.setWarmUsage(obj.getWarmUsage());
 		waterUsageDo.setColdUsage(obj.getColdUsage());
 		return waterUsageDo;
+	}
+	
+	private static WaterMeterDO toDataObject(WaterMeter  obj) {
+		WaterMeterDO  waterMeter = new WaterMeterDO();
+		waterMeter.setId(obj.getId());
+		waterMeter.setMeterIdentifier(obj.getMeterIdentifier());
+		waterMeter.setValidFrom(obj.getValidFrom());
+		waterMeter.setValidTo(obj.getValidTo());
+		waterMeter.setActive(obj.isActive());
+		return waterMeter;
+	}
+	
+	
+	public WaterMeterDO getWaterMeter(Long meterId) {
+		return toDataObject(this.waterMeterRepository.findOne(meterId));
+	}
+	
+	public List<WaterMeterDO> getWaterMeters() {
+		return iterableToDataObjectList(this.waterMeterRepository.findAllByOrderByValidFromDesc(), WaterSvc::toDataObject);
+	}
+	
+	public void addWaterMeter(WaterMeterDO meterDO) {
+		WaterMeter newWaterMeter = new WaterMeter();
+		newWaterMeter.setMeterIdentifier(meterDO.getMeterIdentifier());
+		newWaterMeter.setValidFrom(meterDO.getValidFrom());
+		newWaterMeter.setValidTo(meterDO.getValidTo());
+		newWaterMeter.setActive(meterDO.isActive());
+		
+		this.waterMeterRepository.save(newWaterMeter);
+	}
+	
+	public WaterMeterDO updateWaterMeter(WaterMeterDO waterMeter) {
+		
+		WaterMeter persistent = this.waterMeterRepository.findOne(waterMeter.getId());
+		if (persistent == null) {
+			throw new IllegalStateException("Invalid waterMeter to update");
+		}
+		
+		persistent.setActive(waterMeter.isActive());
+		persistent.setMeterIdentifier(waterMeter.getMeterIdentifier());
+		persistent.setValidFrom(waterMeter.getValidFrom());
+		persistent.setValidTo(waterMeter.getValidTo());
+		
+		return toDataObject(this.waterMeterRepository.save(persistent));
 	}
 }

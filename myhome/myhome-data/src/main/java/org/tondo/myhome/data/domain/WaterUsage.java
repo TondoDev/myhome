@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.tondo.myhome.data.LocalDateDbConverter;
 
@@ -28,6 +30,10 @@ public class WaterUsage {
 	// in m3
 	@Column(nullable = false)
 	private Double warmUsage;
+	
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private WaterMeter waterMeter;
 	
 	public Long getId() {
 		return id;
@@ -58,5 +64,13 @@ public class WaterUsage {
 	}
 	public void setWarmUsage(Double warmUsage) {
 		this.warmUsage = warmUsage;
+	}
+	
+	public WaterMeter getWaterMeter() {
+		return waterMeter;
+	}
+	
+	public void setWaterMeter(WaterMeter waterMeter) {
+		this.waterMeter = waterMeter;
 	}
 }

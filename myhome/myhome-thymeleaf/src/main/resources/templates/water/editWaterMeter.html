@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<title>Edit meters</title>
+	</head>
+	<body>
+	
+		<h1>Water meter edit</h1>
+		<a th:href="@{/water/meter/}">Back</a>
+		<form th:action="@{${formAttrib.action}}" th:method="${formAttrib.method}" th:object="${waterMeter}">
+		
+			<div th:if="${#fields.hasAnyErrors()}">
+				<ul>
+					<li th:each="fieldErr : ${#fields.allErrors()}" th:text="${fieldErr}">Error</li>
+				</ul>
+			</div>
+			
+			<div>
+				<label for="meterIdentifier">Identifier: </label>
+				<input type="text" th:field="*{meterIdentifier}"/>
+				
+				<input type="checkbox" th:field="*{active}" />
+				<label for="active">active</label>
+			</div>
+			<div>
+				<label for="validFrom">Valid from: </label>
+				<input type="text" th:field="*{validFrom}"/>
+				
+				<label for="validTo">Valid to: </label>
+				<input type="text" th:field="*{validTo}"/>
+			</div>
+			<div>
+				<input type="submit" th:value="${formAttrib.submitCaption}" />
+			</div>
+		</form>
+	</body>
+</html>
